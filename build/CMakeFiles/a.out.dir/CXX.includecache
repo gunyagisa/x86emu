@@ -1,0 +1,38 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/gunyagisa/programs/cpp/x86emu/cpu.h
+memory.h
+/home/gunyagisa/programs/cpp/x86emu/memory.h
+register.h
+/home/gunyagisa/programs/cpp/x86emu/register.h
+vector
+-
+
+/home/gunyagisa/programs/cpp/x86emu/main.cc
+cpu.h
+/home/gunyagisa/programs/cpp/x86emu/cpu.h
+iostream
+-
+vector
+-
+bitset
+-
+
+/home/gunyagisa/programs/cpp/x86emu/memory.h
+iostream
+-
+bitset
+-
+
+/home/gunyagisa/programs/cpp/x86emu/register.h
+string
+-
+iostream
+-
+

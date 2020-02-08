@@ -1,9 +1,17 @@
 # version
-cmake_minimum_required(VERSION 2.8)
-# project configure
+cmake_minimum_required(VERSION 3.10)
+add_definitions(-std=c++17)
+
+# project name
 project(x86emu CXX)
 
-# sub directory
-add_subdirectory(src)
+# compile config
+add_executable(
+  x86emu
+  memory.cc
+  register.cc
+  cpu.cc
+  main.cc
+  )
 
-add_executable(a.out main.cc memory.cc register.cc cpu.cc)
+set(EXECUTABLE_OUTPUT_PATH ../)
