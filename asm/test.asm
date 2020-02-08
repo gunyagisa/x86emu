@@ -4,8 +4,10 @@ section .text
 global _start
 
 _start:
-  mov ebx, 0x01
-  add ebx, 0x01
+  mov eax, 0x04
+  add eax, 0x01
+  mov ebx, eax
 
   mov eax, 1
+  mov ebx, ebx
   int 0x80

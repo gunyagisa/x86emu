@@ -11,13 +11,16 @@ int main(int argc, char *argv[])
   }
 
   FILE *fp;
+  size_t len;
   fp = fopen(argv[1], "rb");
   if (fp == NULL) {
     perror("[E] :fopen");
     exit(1);
   }
-
+  char buf[125];
+  len = fread(buf, 1, sizeof(buf), fp);
   fclose(fp);
+  
   CPU cpu;
 
 }

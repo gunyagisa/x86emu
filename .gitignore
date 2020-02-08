@@ -3,3 +3,5 @@
 *.gch
 *.out
 .gdb_history
+
+build/

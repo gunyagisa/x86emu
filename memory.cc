@@ -25,3 +25,11 @@ uint8_t Memory::read_8(uint32_t addr)
     return memory[addr];
 }
 
+uint32_t Memory::read_32(uint32_t addr) 
+{
+  uint32_t ret = 0;
+  for (int i = 0;i < 4;++i) {
+    ret |= (memory[addr + i] << i * 2);
+  }
+  return ret;
+}

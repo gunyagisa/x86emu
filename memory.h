@@ -14,6 +14,8 @@ class Memory {
     void write_8(uint8_t data, uint32_t addr);
     uint8_t read_8(uint32_t addr);
 
+    uint32_t read_32(uint32_t addr);
+
     void show_memory() const
     {
       for (int i = 0;i < size;++i) {
