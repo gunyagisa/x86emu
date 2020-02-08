@@ -17,7 +17,10 @@ class CPU {
     CPU(uint8_t data[], uint32_t size, uint32_t addr = 0);
     ~CPU();
 
+    void run() { decoder(); }
+
     void show_registers();
+    void show_memory() { memory.show_memory(); }
 
     void decoder();
 

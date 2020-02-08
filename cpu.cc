@@ -19,11 +19,13 @@ void CPU::show_registers()
 
 void CPU::decoder()
 {
-  uint8_t code = memory.read_8(eip++);
-  if (0xb8 <= code && code <= 0xbf) {
-    uint32_t num = memory.read_32(eip);
-    eip += 4;
-    mov_r32_imm32(code - 0xb8, num);
+  for (;;) {
+    uint8_t code = memory.read_8(eip++);
+    if (0xb8 <= code && code <= 0xbf) {
+      uint32_t num = memory.read_32(eip);
+      eip += 4;
+      mov_r32_imm32(code - 0xb8, num);
+    }
   }
 }
 
