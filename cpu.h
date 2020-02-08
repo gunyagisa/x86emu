@@ -1,3 +1,4 @@
+#pragma once
 #include "memory.h"
 #include "register.h"
 
@@ -8,13 +9,17 @@ class CPU {
   private:
     Memory memory;
     Register registers[8];
-    std::vector<std::string> registers_name = 
-    {
-      "EAX", "ECX", "EDX", "EBX", "ESP", "EBP", "ESI", "EDI"
-    };
+    enum registers {EAX, ECX, EDX, EBX, ESP, EBP, ESI, EDI, REGISTER_COUNT};
     Register eip;
 
   public:
     CPU();
+    CPU(uint8_t data[], uint32_t size, uint32_t addr = 0);
     ~CPU();
+
+    void show_registers();
+
+    void decoder();
+
+    void mov_r32_imm32(uint8_t reg, uint32_t num);
 };

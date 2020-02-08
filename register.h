@@ -4,14 +4,20 @@
 
 class Register {
 private:
-  std::string name;
   std::uint32_t reg;
 
 public:
   Register();
-  Register(std::string);
+  Register(uint32_t init);
+  Register(const Register&);
 
   void setname(std::string name) { name = name; }
 
   friend std::ostream &operator<<(std::ostream &, const Register &);
+
+  Register& operator++();
+  Register operator++(int);
+  Register& operator+=(const Register& rhs) { reg += rhs.reg; return *this; }
+  operator int() { return reg; }
+  
 };

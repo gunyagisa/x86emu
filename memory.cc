@@ -15,9 +15,11 @@ Memory::~Memory()
     delete memory;
 }
 
-void Memory::write_8(uint8_t data, uint32_t addr)
+void Memory::write(uint32_t addr, uint8_t data[], uint32_t size)
 {
-    memory[addr] = data;
+  for (int i = 0;i < size;++i) {
+    memory[addr + i] = data[i];
+  }
 }
 
 uint8_t Memory::read_8(uint32_t addr)
