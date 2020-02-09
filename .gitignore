@@ -1,6 +1,8 @@
 *.o
 *.bin
 
+x86emu
+
 *.gch
 *.out
 .gdb_history
