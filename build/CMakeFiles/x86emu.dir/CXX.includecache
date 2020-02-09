@@ -9,6 +9,8 @@
 /home/gunyagisa/programs/cpp/x86emu/cpu.cc
 cpu.h
 /home/gunyagisa/programs/cpp/x86emu/cpu.h
+instruction.h
+/home/gunyagisa/programs/cpp/x86emu/instruction.h
 
 /home/gunyagisa/programs/cpp/x86emu/cpu.h
 memory.h
@@ -17,6 +19,16 @@ register.h
 /home/gunyagisa/programs/cpp/x86emu/register.h
 vector
 -
+
+/home/gunyagisa/programs/cpp/x86emu/instruction.cc
+instruction.h
+/home/gunyagisa/programs/cpp/x86emu/instruction.h
+register.h
+/home/gunyagisa/programs/cpp/x86emu/register.h
+
+/home/gunyagisa/programs/cpp/x86emu/instruction.h
+register.h
+/home/gunyagisa/programs/cpp/x86emu/register.h
 
 /home/gunyagisa/programs/cpp/x86emu/main.cc
 cpu.h

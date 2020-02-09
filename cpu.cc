@@ -1,4 +1,5 @@
 #include "cpu.h"
+#include "instruction.h"
 
 CPU::CPU() : memory(), eip()
 { }
@@ -23,11 +24,6 @@ void CPU::decoder()
   if (0xb8 <= code && code <= 0xbf) {
     uint32_t num = memory.read_32(eip);
     eip += 4;
-    mov_r32_imm32(code - 0xb8, num);
+    Instruction::mov_r32_imm32(registers[code - 0xb8], num);
   }
-}
-
-void CPU::mov_r32_imm32(uint8_t reg, uint32_t num)
-{
-  registers[reg] += num;
 }

@@ -5,6 +5,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
   "/home/gunyagisa/programs/cpp/x86emu/cpu.cc" "/home/gunyagisa/programs/cpp/x86emu/build/CMakeFiles/x86emu.dir/cpu.cc.o"
+  "/home/gunyagisa/programs/cpp/x86emu/instruction.cc" "/home/gunyagisa/programs/cpp/x86emu/build/CMakeFiles/x86emu.dir/instruction.cc.o"
   "/home/gunyagisa/programs/cpp/x86emu/main.cc" "/home/gunyagisa/programs/cpp/x86emu/build/CMakeFiles/x86emu.dir/main.cc.o"
   "/home/gunyagisa/programs/cpp/x86emu/memory.cc" "/home/gunyagisa/programs/cpp/x86emu/build/CMakeFiles/x86emu.dir/memory.cc.o"
   "/home/gunyagisa/programs/cpp/x86emu/register.cc" "/home/gunyagisa/programs/cpp/x86emu/build/CMakeFiles/x86emu.dir/register.cc.o"

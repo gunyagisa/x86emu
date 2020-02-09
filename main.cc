@@ -30,7 +30,6 @@ int main(int argc, char *argv[])
 
   CPU cpu{buf, (uint32_t)len};
   cpu.run();
-  std::cout << "cpu2" << std::endl;
   cpu.show_registers();
 
 }

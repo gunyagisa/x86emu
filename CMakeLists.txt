@@ -11,6 +11,7 @@ add_executable(
   memory.cc
   register.cc
   cpu.cc
+  instruction.cc
   main.cc
   )
 

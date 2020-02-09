@@ -150,6 +150,33 @@ cpu.cc.s:
 	$(MAKE) -f CMakeFiles/x86emu.dir/build.make CMakeFiles/x86emu.dir/cpu.cc.s
 .PHONY : cpu.cc.s
 
+instruction.o: instruction.cc.o
+
+.PHONY : instruction.o
+
+# target to build an object file
+instruction.cc.o:
+	$(MAKE) -f CMakeFiles/x86emu.dir/build.make CMakeFiles/x86emu.dir/instruction.cc.o
+.PHONY : instruction.cc.o
+
+instruction.i: instruction.cc.i
+
+.PHONY : instruction.i
+
+# target to preprocess a source file
+instruction.cc.i:
+	$(MAKE) -f CMakeFiles/x86emu.dir/build.make CMakeFiles/x86emu.dir/instruction.cc.i
+.PHONY : instruction.cc.i
+
+instruction.s: instruction.cc.s
+
+.PHONY : instruction.s
+
+# target to generate assembly for a file
+instruction.cc.s:
+	$(MAKE) -f CMakeFiles/x86emu.dir/build.make CMakeFiles/x86emu.dir/instruction.cc.s
+.PHONY : instruction.cc.s
+
 main.o: main.cc.o
 
 .PHONY : main.o
@@ -243,6 +270,9 @@ help:
 	@echo "... cpu.o"
 	@echo "... cpu.i"
 	@echo "... cpu.s"
+	@echo "... instruction.o"
+	@echo "... instruction.i"
+	@echo "... instruction.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

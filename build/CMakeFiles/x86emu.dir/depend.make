@@ -3,8 +3,13 @@
 
 CMakeFiles/x86emu.dir/cpu.cc.o: ../cpu.cc
 CMakeFiles/x86emu.dir/cpu.cc.o: ../cpu.h
+CMakeFiles/x86emu.dir/cpu.cc.o: ../instruction.h
 CMakeFiles/x86emu.dir/cpu.cc.o: ../memory.h
 CMakeFiles/x86emu.dir/cpu.cc.o: ../register.h
+
+CMakeFiles/x86emu.dir/instruction.cc.o: ../instruction.cc
+CMakeFiles/x86emu.dir/instruction.cc.o: ../instruction.h
+CMakeFiles/x86emu.dir/instruction.cc.o: ../register.h
 
 CMakeFiles/x86emu.dir/main.cc.o: ../cpu.h
 CMakeFiles/x86emu.dir/main.cc.o: ../main.cc

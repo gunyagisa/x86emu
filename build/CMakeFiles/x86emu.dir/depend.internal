@@ -4,7 +4,12 @@
 CMakeFiles/x86emu.dir/cpu.cc.o
  /home/gunyagisa/programs/cpp/x86emu/cpu.cc
  /home/gunyagisa/programs/cpp/x86emu/cpu.h
+ /home/gunyagisa/programs/cpp/x86emu/instruction.h
  /home/gunyagisa/programs/cpp/x86emu/memory.h
+ /home/gunyagisa/programs/cpp/x86emu/register.h
+CMakeFiles/x86emu.dir/instruction.cc.o
+ /home/gunyagisa/programs/cpp/x86emu/instruction.cc
+ /home/gunyagisa/programs/cpp/x86emu/instruction.h
  /home/gunyagisa/programs/cpp/x86emu/register.h
 CMakeFiles/x86emu.dir/main.cc.o
  /home/gunyagisa/programs/cpp/x86emu/cpu.h

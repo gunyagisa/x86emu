@@ -23,6 +23,4 @@ class CPU {
     void show_memory() { memory.show_memory(); }
 
     void decoder();
-
-    void mov_r32_imm32(uint8_t reg, uint32_t num);
 };
