@@ -21,9 +21,15 @@ void CPU::show_registers()
 void CPU::decoder()
 {
   uint8_t code = memory.read_8(eip++);
-  if (0xb8 <= code && code <= 0xbf) {
-    uint32_t num = memory.read_32(eip);
-    eip += 4;
-    Instruction::mov_r32_imm32(registers[code - 0xb8], num);
-  }
+    if (0xb8 <= code && code <= 0xbf) {
+      uint32_t num = memory.read_32(eip);
+      eip += 4;
+      Instruction::mov_r32_imm32(registers[code - 0xb8], num);
+    } else if ( code == 0x05 ) {
+      uint32_t num = memory.read_32(eip);
+      eip += 4;
+      Instruction::add_eax_imm32(registers[0], num);
+    } else {
+      return;
+    }
 }
