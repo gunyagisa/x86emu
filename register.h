@@ -9,7 +9,7 @@ private:
 public:
   Register();
   Register(uint32_t init);
-  Register(const Register&);
+  Register(const Register &src);
 
   void setname(std::string name) { name = name; }
 

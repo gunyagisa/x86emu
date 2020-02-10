@@ -11,6 +11,8 @@ cpu.h
 /home/gunyagisa/programs/cpp/x86emu/cpu.h
 instruction.h
 /home/gunyagisa/programs/cpp/x86emu/instruction.h
+modrm.h
+/home/gunyagisa/programs/cpp/x86emu/modrm.h
 
 /home/gunyagisa/programs/cpp/x86emu/cpu.h
 memory.h
@@ -25,6 +27,8 @@ instruction.h
 /home/gunyagisa/programs/cpp/x86emu/instruction.h
 register.h
 /home/gunyagisa/programs/cpp/x86emu/register.h
+modrm.h
+/home/gunyagisa/programs/cpp/x86emu/modrm.h
 
 /home/gunyagisa/programs/cpp/x86emu/instruction.h
 register.h
@@ -43,11 +47,23 @@ bitset
 /home/gunyagisa/programs/cpp/x86emu/memory.cc
 memory.h
 /home/gunyagisa/programs/cpp/x86emu/memory.h
+register.h
+/home/gunyagisa/programs/cpp/x86emu/register.h
 
 /home/gunyagisa/programs/cpp/x86emu/memory.h
+register.h
+/home/gunyagisa/programs/cpp/x86emu/register.h
 iostream
 -
 bitset
+-
+
+/home/gunyagisa/programs/cpp/x86emu/modrm.cc
+modrm.h
+/home/gunyagisa/programs/cpp/x86emu/modrm.h
+
+/home/gunyagisa/programs/cpp/x86emu/modrm.h
+iostream
 -
 
 /home/gunyagisa/programs/cpp/x86emu/register.cc

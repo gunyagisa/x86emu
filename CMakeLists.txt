@@ -12,6 +12,7 @@ add_executable(
   register.cc
   cpu.cc
   instruction.cc
+  modrm.cc
   main.cc
   )
 

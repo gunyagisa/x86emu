@@ -231,6 +231,33 @@ memory.cc.s:
 	$(MAKE) -f CMakeFiles/x86emu.dir/build.make CMakeFiles/x86emu.dir/memory.cc.s
 .PHONY : memory.cc.s
 
+modrm.o: modrm.cc.o
+
+.PHONY : modrm.o
+
+# target to build an object file
+modrm.cc.o:
+	$(MAKE) -f CMakeFiles/x86emu.dir/build.make CMakeFiles/x86emu.dir/modrm.cc.o
+.PHONY : modrm.cc.o
+
+modrm.i: modrm.cc.i
+
+.PHONY : modrm.i
+
+# target to preprocess a source file
+modrm.cc.i:
+	$(MAKE) -f CMakeFiles/x86emu.dir/build.make CMakeFiles/x86emu.dir/modrm.cc.i
+.PHONY : modrm.cc.i
+
+modrm.s: modrm.cc.s
+
+.PHONY : modrm.s
+
+# target to generate assembly for a file
+modrm.cc.s:
+	$(MAKE) -f CMakeFiles/x86emu.dir/build.make CMakeFiles/x86emu.dir/modrm.cc.s
+.PHONY : modrm.cc.s
+
 register.o: register.cc.o
 
 .PHONY : register.o
@@ -279,6 +306,9 @@ help:
 	@echo "... memory.o"
 	@echo "... memory.i"
 	@echo "... memory.s"
+	@echo "... modrm.o"
+	@echo "... modrm.i"
+	@echo "... modrm.s"
 	@echo "... register.o"
 	@echo "... register.i"
 	@echo "... register.s"

@@ -3,6 +3,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/x86emu.dir/register.cc.o"
   "CMakeFiles/x86emu.dir/cpu.cc.o"
   "CMakeFiles/x86emu.dir/instruction.cc.o"
+  "CMakeFiles/x86emu.dir/modrm.cc.o"
   "CMakeFiles/x86emu.dir/main.cc.o"
   "../x86emu.pdb"
   "../x86emu"

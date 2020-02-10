@@ -7,6 +7,9 @@ elf: test.asm
 	nasm -f elf64 test.asm
 	ld test.o
 
+dump: elf
+	objdump -d a.out -M intel
+
 run: elf
 	./a.out
 

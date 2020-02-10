@@ -8,6 +8,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/home/gunyagisa/programs/cpp/x86emu/instruction.cc" "/home/gunyagisa/programs/cpp/x86emu/build/CMakeFiles/x86emu.dir/instruction.cc.o"
   "/home/gunyagisa/programs/cpp/x86emu/main.cc" "/home/gunyagisa/programs/cpp/x86emu/build/CMakeFiles/x86emu.dir/main.cc.o"
   "/home/gunyagisa/programs/cpp/x86emu/memory.cc" "/home/gunyagisa/programs/cpp/x86emu/build/CMakeFiles/x86emu.dir/memory.cc.o"
+  "/home/gunyagisa/programs/cpp/x86emu/modrm.cc" "/home/gunyagisa/programs/cpp/x86emu/build/CMakeFiles/x86emu.dir/modrm.cc.o"
   "/home/gunyagisa/programs/cpp/x86emu/register.cc" "/home/gunyagisa/programs/cpp/x86emu/build/CMakeFiles/x86emu.dir/register.cc.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")

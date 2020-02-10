@@ -5,10 +5,12 @@ CMakeFiles/x86emu.dir/cpu.cc.o: ../cpu.cc
 CMakeFiles/x86emu.dir/cpu.cc.o: ../cpu.h
 CMakeFiles/x86emu.dir/cpu.cc.o: ../instruction.h
 CMakeFiles/x86emu.dir/cpu.cc.o: ../memory.h
+CMakeFiles/x86emu.dir/cpu.cc.o: ../modrm.h
 CMakeFiles/x86emu.dir/cpu.cc.o: ../register.h
 
 CMakeFiles/x86emu.dir/instruction.cc.o: ../instruction.cc
 CMakeFiles/x86emu.dir/instruction.cc.o: ../instruction.h
+CMakeFiles/x86emu.dir/instruction.cc.o: ../modrm.h
 CMakeFiles/x86emu.dir/instruction.cc.o: ../register.h
 
 CMakeFiles/x86emu.dir/main.cc.o: ../cpu.h
@@ -18,6 +20,10 @@ CMakeFiles/x86emu.dir/main.cc.o: ../register.h
 
 CMakeFiles/x86emu.dir/memory.cc.o: ../memory.cc
 CMakeFiles/x86emu.dir/memory.cc.o: ../memory.h
+CMakeFiles/x86emu.dir/memory.cc.o: ../register.h
+
+CMakeFiles/x86emu.dir/modrm.cc.o: ../modrm.cc
+CMakeFiles/x86emu.dir/modrm.cc.o: ../modrm.h
 
 CMakeFiles/x86emu.dir/register.cc.o: ../register.cc
 CMakeFiles/x86emu.dir/register.cc.o: ../register.h
