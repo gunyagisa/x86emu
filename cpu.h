@@ -6,7 +6,6 @@
 
 
 class CPU {
-  private:
     Memory memory;
     Register registers[8];
     enum registers {EAX, ECX, EDX, EBX, ESP, EBP, ESI, EDI, REGISTER_COUNT};
