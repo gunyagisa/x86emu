@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
   std::cout << std::endl;
   */
 
-  CPU cpu{buf, (uint32_t)len};
+  CPU cpu{buf, 1024, 0x7c00};
   cpu.run();
   cpu.show_registers();
 

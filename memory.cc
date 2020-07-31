@@ -23,13 +23,20 @@ void Memory::write(uint32_t addr, uint8_t data[], uint32_t size)
   }
 }
 
+void Memory::write_32(uint32_t addr, uint32_t val)
+{
+  memory[addr] = val;
+}
+
 uint8_t Memory::read_8(uint32_t addr)
 {
+  printf("read memory %x\n", memory[addr]);
     return memory[addr];
 }
 uint8_t Memory::read_8(Register &reg)
 {
-  return memory[reg++];
+  printf("read memory %x\n", memory[reg]);
+  return memory[reg];
 }
 
 uint32_t Memory::read_32(uint32_t addr) 
@@ -43,6 +50,5 @@ uint32_t Memory::read_32(uint32_t addr)
 uint32_t Memory::read_32(Register &reg)
 {
   uint32_t ret = read_32((int)reg);
-  reg += 4;
   return ret;
 }

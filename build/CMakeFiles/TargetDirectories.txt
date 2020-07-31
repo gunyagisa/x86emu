@@ -1,3 +1,0 @@
-/home/gunyagisa/src/x86emu/build/CMakeFiles/rebuild_cache.dir
-/home/gunyagisa/src/x86emu/build/CMakeFiles/edit_cache.dir
-/home/gunyagisa/src/x86emu/build/CMakeFiles/x86emu.dir
