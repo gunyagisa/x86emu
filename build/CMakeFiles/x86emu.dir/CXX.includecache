@@ -6,37 +6,37 @@
 
 #IncludeRegexTransform: 
 
-/home/gunyagisa/programs/cpp/x86emu/cpu.cc
+/home/gunyagisa/src/x86emu/cpu.cc
 cpu.h
-/home/gunyagisa/programs/cpp/x86emu/cpu.h
+/home/gunyagisa/src/x86emu/cpu.h
 instruction.h
-/home/gunyagisa/programs/cpp/x86emu/instruction.h
+/home/gunyagisa/src/x86emu/instruction.h
 modrm.h
-/home/gunyagisa/programs/cpp/x86emu/modrm.h
+/home/gunyagisa/src/x86emu/modrm.h
 
-/home/gunyagisa/programs/cpp/x86emu/cpu.h
+/home/gunyagisa/src/x86emu/cpu.h
 memory.h
-/home/gunyagisa/programs/cpp/x86emu/memory.h
+/home/gunyagisa/src/x86emu/memory.h
 register.h
-/home/gunyagisa/programs/cpp/x86emu/register.h
+/home/gunyagisa/src/x86emu/register.h
 vector
 -
 
-/home/gunyagisa/programs/cpp/x86emu/instruction.cc
+/home/gunyagisa/src/x86emu/instruction.cc
 instruction.h
-/home/gunyagisa/programs/cpp/x86emu/instruction.h
+/home/gunyagisa/src/x86emu/instruction.h
 register.h
-/home/gunyagisa/programs/cpp/x86emu/register.h
+/home/gunyagisa/src/x86emu/register.h
 modrm.h
-/home/gunyagisa/programs/cpp/x86emu/modrm.h
+/home/gunyagisa/src/x86emu/modrm.h
 
-/home/gunyagisa/programs/cpp/x86emu/instruction.h
+/home/gunyagisa/src/x86emu/instruction.h
 register.h
-/home/gunyagisa/programs/cpp/x86emu/register.h
+/home/gunyagisa/src/x86emu/register.h
 
-/home/gunyagisa/programs/cpp/x86emu/main.cc
+/home/gunyagisa/src/x86emu/main.cc
 cpu.h
-/home/gunyagisa/programs/cpp/x86emu/cpu.h
+/home/gunyagisa/src/x86emu/cpu.h
 iostream
 -
 vector
@@ -44,33 +44,33 @@ vector
 bitset
 -
 
-/home/gunyagisa/programs/cpp/x86emu/memory.cc
+/home/gunyagisa/src/x86emu/memory.cc
 memory.h
-/home/gunyagisa/programs/cpp/x86emu/memory.h
+/home/gunyagisa/src/x86emu/memory.h
 register.h
-/home/gunyagisa/programs/cpp/x86emu/register.h
+/home/gunyagisa/src/x86emu/register.h
 
-/home/gunyagisa/programs/cpp/x86emu/memory.h
+/home/gunyagisa/src/x86emu/memory.h
 register.h
-/home/gunyagisa/programs/cpp/x86emu/register.h
+/home/gunyagisa/src/x86emu/register.h
 iostream
 -
 bitset
 -
 
-/home/gunyagisa/programs/cpp/x86emu/modrm.cc
+/home/gunyagisa/src/x86emu/modrm.cc
 modrm.h
-/home/gunyagisa/programs/cpp/x86emu/modrm.h
+/home/gunyagisa/src/x86emu/modrm.h
 
-/home/gunyagisa/programs/cpp/x86emu/modrm.h
+/home/gunyagisa/src/x86emu/modrm.h
 iostream
 -
 
-/home/gunyagisa/programs/cpp/x86emu/register.cc
+/home/gunyagisa/src/x86emu/register.cc
 register.h
-/home/gunyagisa/programs/cpp/x86emu/register.h
+/home/gunyagisa/src/x86emu/register.h
 
-/home/gunyagisa/programs/cpp/x86emu/register.h
+/home/gunyagisa/src/x86emu/register.h
 string
 -
 iostream

@@ -1,12 +1,12 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/x86emu.dir/memory.cc.o"
-  "CMakeFiles/x86emu.dir/register.cc.o"
+  "../x86emu"
+  "../x86emu.pdb"
   "CMakeFiles/x86emu.dir/cpu.cc.o"
   "CMakeFiles/x86emu.dir/instruction.cc.o"
-  "CMakeFiles/x86emu.dir/modrm.cc.o"
   "CMakeFiles/x86emu.dir/main.cc.o"
-  "../x86emu.pdb"
-  "../x86emu"
+  "CMakeFiles/x86emu.dir/memory.cc.o"
+  "CMakeFiles/x86emu.dir/modrm.cc.o"
+  "CMakeFiles/x86emu.dir/register.cc.o"
 )
 
 # Per-language clean rules from dependency scanning.

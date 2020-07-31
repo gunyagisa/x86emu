@@ -4,12 +4,12 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/gunyagisa/programs/cpp/x86emu/cpu.cc" "/home/gunyagisa/programs/cpp/x86emu/build/CMakeFiles/x86emu.dir/cpu.cc.o"
-  "/home/gunyagisa/programs/cpp/x86emu/instruction.cc" "/home/gunyagisa/programs/cpp/x86emu/build/CMakeFiles/x86emu.dir/instruction.cc.o"
-  "/home/gunyagisa/programs/cpp/x86emu/main.cc" "/home/gunyagisa/programs/cpp/x86emu/build/CMakeFiles/x86emu.dir/main.cc.o"
-  "/home/gunyagisa/programs/cpp/x86emu/memory.cc" "/home/gunyagisa/programs/cpp/x86emu/build/CMakeFiles/x86emu.dir/memory.cc.o"
-  "/home/gunyagisa/programs/cpp/x86emu/modrm.cc" "/home/gunyagisa/programs/cpp/x86emu/build/CMakeFiles/x86emu.dir/modrm.cc.o"
-  "/home/gunyagisa/programs/cpp/x86emu/register.cc" "/home/gunyagisa/programs/cpp/x86emu/build/CMakeFiles/x86emu.dir/register.cc.o"
+  "/home/gunyagisa/src/x86emu/cpu.cc" "/home/gunyagisa/src/x86emu/build/CMakeFiles/x86emu.dir/cpu.cc.o"
+  "/home/gunyagisa/src/x86emu/instruction.cc" "/home/gunyagisa/src/x86emu/build/CMakeFiles/x86emu.dir/instruction.cc.o"
+  "/home/gunyagisa/src/x86emu/main.cc" "/home/gunyagisa/src/x86emu/build/CMakeFiles/x86emu.dir/main.cc.o"
+  "/home/gunyagisa/src/x86emu/memory.cc" "/home/gunyagisa/src/x86emu/build/CMakeFiles/x86emu.dir/memory.cc.o"
+  "/home/gunyagisa/src/x86emu/modrm.cc" "/home/gunyagisa/src/x86emu/build/CMakeFiles/x86emu.dir/modrm.cc.o"
+  "/home/gunyagisa/src/x86emu/register.cc" "/home/gunyagisa/src/x86emu/build/CMakeFiles/x86emu.dir/register.cc.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
