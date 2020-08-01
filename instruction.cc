@@ -40,7 +40,7 @@ namespace Instruction16 {
   // 0xeb JMP
   void jmp_short(CPU &cpu)
   {
-    uint8_t rel8 = cpu.get_code8();
+    int8_t rel8 = cpu.get_code8();
     cpu.eip++;
     printf("rel8 %x\n", rel8);
     cpu.eip += cpu.cs * 16 + rel8;
@@ -54,15 +54,38 @@ namespace Instruction16 {
     cpu.registers[0] = imm16;
   }
 
+  // 0x8c
+  void mov_rm16_sreg(CPU &cpu)
+  {
+    ModRM modrm{cpu.get_code8()};
+    modrm.parse(cpu);
+    uint16_t val = get_sreg(cpu, modrm);
+    printf("val 0x%x\n", val);
+    set_rm16(cpu, modrm, val);
+  }
+
+
   // 0x8e
   void mov_sreg_rm16(CPU &cpu)
   {
     ModRM modrm{cpu.get_code8()};
     modrm.parse(cpu);
     uint16_t val = get_rm16(cpu, modrm);
-    printf("val %d\n", val);
+    printf("val 0x%x\n", val);
     set_sreg(cpu, modrm, val);
 
     cpu.show_segment_registers();
   }
+
+  // 0x73
+  void jnc(CPU &cpu)
+  {
+    printf("eflags: %08x\n", cpu.eflags);
+    if (!(cpu.is_cf())) {
+      jmp_short(cpu);
+    } else {
+      cpu.eip++;
+    }
+  }
+
 }
