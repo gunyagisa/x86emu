@@ -41,14 +41,14 @@ uint8_t Memory::read_8(Register &reg)
 
 uint16_t Memory::read_16(uint16_t addr)
 {
-  return memory[addr + 1] + memory[addr] << 2;
+  return (memory[addr] | memory[addr+1] << 8);
 }
 
 uint32_t Memory::read_32(uint32_t addr) 
 {
   uint32_t ret = 0;
   for (int i = 0;i < 4;++i) {
-    ret |= (memory[addr + i] << i * 2);
+    ret |= (memory[addr + i] << i * 4);
   }
   return ret;
 }

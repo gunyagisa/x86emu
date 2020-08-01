@@ -18,6 +18,6 @@ public:
   Register& operator++();
   Register operator++(int);
   Register& operator+=(const Register& rhs) { reg += rhs.reg; return *this; }
-  operator int() { return reg; }
+  operator int() { return (int)reg; }
   
 };

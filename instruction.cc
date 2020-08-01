@@ -51,7 +51,7 @@ namespace Instruction16 {
   {
     uint16_t imm16 = cpu.get_code16();
     cpu.eip += 2;
-    cpu.registers[0] = cpu.registers[0] & 0xffff0000 + imm16;
+    cpu.registers[0] = imm16;
   }
 
   // 0x8e

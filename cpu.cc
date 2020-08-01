@@ -1,6 +1,7 @@
 #include "cpu.h"
 #include "instruction.h"
 #include "modrm.h"
+#include "bios.h"
 
 CPU::CPU()
   : memory(), eip()
@@ -47,7 +48,7 @@ uint8_t CPU::get_code8()
 
 uint16_t CPU::get_code16()
 {
-  uint16_t code = memory.read_8(eip) + (memory.read_8(eip + 1) << 2);
+  uint16_t code = memory.read_16(eip);
   return code;
 }
 
@@ -60,7 +61,7 @@ uint32_t CPU::get_code32()
 void CPU::decoder()
 {
   for (;;) {
-    printf("mode %d\n", mode);
+    show_registers();
     if (mode == PROTECTED_MODE) {
       using namespace Instruction32;
       uint8_t code = get_code8();
@@ -101,11 +102,16 @@ void CPU::decoder()
       if (0xb0 <= code && code <= 0xb7) {
         uint8_t val = get_code8();
         eip++;
-        registers[code - 0xb0] = registers[code - 0xb0] & 0xffffff00  + val;
+        if (code - 0xb0 <= 3) {
+          registers[code - 0xb0] = (registers[code - 0xb0] & 0xffffff00) | val;
+        } else {
+          registers[code - 0xb0 - 4] = (registers[code - 0xb0 - 4] & 0xffff00ff) | val << 8;
+        }
       } else if (0xb8 <= code && code <= 0xbf) {
         uint16_t val = get_code16();
         eip += 2;
-        registers[code - 0xb8] = registers[code - 0xb8] & 0xffff0000  + val;
+        printf("val %x\n", val);
+        registers[code - 0xb8] = val;
       } else {
 
         switch (code) {
@@ -117,6 +123,11 @@ void CPU::decoder()
             break;
           case 0x8e:
             mov_sreg_rm16(*this);
+            break;
+          case 0xcd: // int
+            if (get_code8() == 0x13) {
+              software_interrupt(*this);
+            }
             break;
           default:
             printf("[E] can not implement: opecede %x, eip: %x\n", code, eip);

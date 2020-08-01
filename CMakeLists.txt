@@ -14,6 +14,7 @@ add_executable(
   instruction.cc
   modrm.cc
   main.cc
+  bios.cc
   )
 
 set(EXECUTABLE_OUTPUT_PATH ../)
