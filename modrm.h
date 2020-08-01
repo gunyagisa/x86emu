@@ -4,7 +4,12 @@
 
 struct ModRM {
   uint8_t mod: 2;
-  uint8_t reg: 3 ;
+
+  union {
+    uint8_t reg: 3 ;
+    uint8_t ext: 3;
+  };
+
   uint8_t rm: 3;
 
   uint8_t sib: 2;
@@ -22,9 +27,12 @@ struct ModRM {
   void show();
 };
 
+void set_rm16(CPU &cpu, ModRM &modrm, uint16_t val);
 void set_rm32(CPU &cpu, ModRM &modrm, uint32_t val);
 void set_sreg(CPU &cpu, ModRM &modrm, uint16_t val);
 
+
 uint16_t get_rm16(CPU &cpu, ModRM &modrm);
 uint32_t get_r32(CPU &cpu, ModRM &modrm);
+uint16_t get_sreg(CPU &cpu, ModRM &modrm);
 

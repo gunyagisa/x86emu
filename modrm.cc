@@ -1,7 +1,6 @@
 #include "modrm.h"
 
-ModRM::ModRM(const uint8_t code)
-{
+ModRM::ModRM(const uint8_t code) {
   mod = code >> 6;
   reg = (code >> 3) & 0x7;
   rm = code & 0x7;
@@ -60,6 +59,16 @@ void ModRM::show()
   printf("modrm mod %x, reg %x, rm %x\n", mod, reg, rm);
 }
 
+void set_rm16(CPU &cpu, ModRM &modrm, uint16_t val)
+{
+  if (modrm.mod == 3) {
+    cpu.registers[modrm.rm].write_16(val);
+  } else {
+    uint32_t addr = modrm.calc_address(cpu);
+    cpu.memory.write_16(addr, val);
+  }
+}
+
 void set_rm32(CPU &cpu, ModRM &modrm, uint32_t val)
 {
   if ( modrm.mod == 3 ) {
@@ -111,4 +120,32 @@ uint16_t get_rm16(CPU &cpu, ModRM &modrm)
 uint32_t get_r32(CPU &cpu, ModRM &modrm)
 {
   return cpu.registers[modrm.reg].read_32();
+}
+
+uint16_t get_sreg(CPU &cpu, ModRM &modrm)
+{
+  switch (modrm.reg) {
+    case 0:
+      return cpu.es;
+      break;
+    case 1:
+      return cpu.cs;
+      break;
+    case 2:
+      return cpu.ss;
+      break;
+    case 3:
+      return cpu.ds;
+      break;
+    case 4:
+      return cpu.fs;
+      break;
+    case 5:
+      return cpu.gs;
+      break;
+    default:
+      printf("can not get segment register: modrm.reg %d\n", modrm.reg);
+      exit(0);
+      break;
+  }
 }
