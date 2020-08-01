@@ -34,12 +34,12 @@ void CPU::show_registers()
 
 void CPU::show_segment_registers()
 {
-  printf("cs = %d\n", cs);
-  printf("ds = %d\n", ds);
-  printf("ss = %d\n", ss);
-  printf("es = %d\n", es);
-  printf("fs = %d\n", fs);
-  printf("gs = %d\n", gs);
+  printf("cs = 0x%x\n", cs);
+  printf("ds = 0x%x\n", ds);
+  printf("ss = 0x%x\n", ss);
+  printf("es = 0x%x\n", es);
+  printf("fs = 0x%x\n", fs);
+  printf("gs = 0x%x\n", gs);
 }
 
 uint8_t CPU::get_code8()
@@ -58,6 +58,14 @@ uint32_t CPU::get_code32()
 {
   uint32_t code = memory.read_32(eip);
   return code;
+}
+
+bool CPU::is_cf()
+{
+  if ((eflags & 0x80000000) >> 31 == 1)
+    return true;
+  else 
+    return false;
 }
 
 void CPU::decoder()
@@ -123,6 +131,9 @@ void CPU::decoder()
           case 0xb8:
             mov_r16_imm16(*this);
             break;
+          case 0x8c:
+            mov_rm16_sreg(*this);
+            break;
           case 0x8e:
             mov_sreg_rm16(*this);
             break;
@@ -131,8 +142,15 @@ void CPU::decoder()
               software_interrupt(*this);
             }
             break;
+          case 0x73:
+            jnc(*this);
+            break;
           default:
-            printf("[E] can not implement: opecede %x, eip: %x\n", code, eip);
+            for (int i = 0; i < 10; i++) {
+              printf("[E] can not implement: opecede %x, eip: %x\n", code, eip.read_32());
+              eip++;
+              code = get_code8();
+            }
             show_registers();
             exit(0);
             break;

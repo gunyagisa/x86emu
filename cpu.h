@@ -18,7 +18,7 @@ class CPU {
     Register eip;
     Register cr[8];
     uint16_t cs, ds, es, ss, fs, gs;
-    Register eflags;
+    uint32_t eflags;
 
     enum registers {EAX, ECX, EDX, EBX, ESP, EBP, ESI, EDI, REGISTER_COUNT};
 
@@ -45,6 +45,8 @@ class CPU {
     ~CPU();
 
     void run() { decoder(); }
+
+    bool is_cf();
 
     uint8_t get_code8();
     uint16_t get_code16();
