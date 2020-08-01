@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     perror("[E] :fopen");
     exit(1);
   }
-  unsigned char buf[125];
+  unsigned char buf[1024];
   len = fread(buf, 1, sizeof(buf), fp);
   fclose(fp);
 
