@@ -28,6 +28,8 @@ void CPU::show_registers()
   for (int i = 0;i < 8;i++) {
     std::cout << registers[i] << std::endl;
   }
+
+  std::cout << "eip: " << eip << std::endl;
 }
 
 void CPU::show_segment_registers()
@@ -89,7 +91,7 @@ void CPU::decoder()
       } else {
         std::cout << "[E] can not implement: opecode "
           << std::showbase << std::hex << (int)code
-          << ", eip: " << (int)eip << std::noshowbase << std::endl;
+          << ", eip: " << eip << std::noshowbase << std::endl;
         show_registers();
         exit(0);
       }
@@ -103,15 +105,15 @@ void CPU::decoder()
         uint8_t val = get_code8();
         eip++;
         if (code - 0xb0 <= 3) {
-          registers[code - 0xb0] = (registers[code - 0xb0] & 0xffffff00) | val;
+          registers[code - 0xb0].write_8l(val);
         } else {
-          registers[code - 0xb0 - 4] = (registers[code - 0xb0 - 4] & 0xffff00ff) | val << 8;
+          registers[code - 0xb0 - 4].write_8h(val);
         }
       } else if (0xb8 <= code && code <= 0xbf) {
         uint16_t val = get_code16();
         eip += 2;
         printf("val %x\n", val);
-        registers[code - 0xb8] = val;
+        registers[code - 0xb8].write_16(val);
       } else {
 
         switch (code) {

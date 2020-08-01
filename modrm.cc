@@ -33,21 +33,21 @@ uint32_t ModRM::calc_address(CPU &cpu)
     } else if (rm == 5) {
       return disp32;
     } else {
-      return cpu.registers[rm];
+      return cpu.registers[rm].read_32();;
     }
   } else if (mod == 1) {
     if (rm == 4) {
       printf("modrm mod 1 , rm 4\n");
       exit(1);
     } else {
-      return cpu.registers[rm] + disp8;
+      return cpu.registers[rm].read_32() + disp8;
     }
   } else if (mod == 2) {
     if (rm == 4) {
       printf("modrm mod 3 , rm 4\n");
       exit(1);
     } else {
-      return cpu.registers[rm] + disp32;
+      return cpu.registers[rm].read_32() + disp32;
     }
   } else {
     printf("wrong modrm\n");
@@ -63,7 +63,7 @@ void ModRM::show()
 void set_rm32(CPU &cpu, ModRM &modrm, uint32_t val)
 {
   if ( modrm.mod == 3 ) {
-    cpu.registers[modrm.rm] = val;
+    cpu.registers[modrm.rm].write_32(val);
   } else {
     uint32_t addr = modrm.calc_address(cpu);
     cpu.memory.write_32(addr, val);
@@ -101,11 +101,7 @@ void set_sreg(CPU &cpu, ModRM &modrm, uint16_t val)
 uint16_t get_rm16(CPU &cpu, ModRM &modrm)
 {
   if (modrm.mod == 3) {
-    if (modrm.rm <= 3) {
-      return cpu.registers[modrm.rm] & 0xffff;
-    } else {
-      return cpu.registers[modrm.rm - 4] >> 4;
-    }
+      return cpu.registers[modrm.rm].read_16();
   } else {
     uint16_t addr = modrm.calc_address(cpu);
     return cpu.memory.read_16(addr);
@@ -114,5 +110,5 @@ uint16_t get_rm16(CPU &cpu, ModRM &modrm)
 
 uint32_t get_r32(CPU &cpu, ModRM &modrm)
 {
-  return cpu.registers[modrm.reg];
+  return cpu.registers[modrm.reg].read_32();
 }

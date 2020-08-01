@@ -23,6 +23,7 @@ class Memory {
     uint32_t read_32(uint32_t addr);
 
     uint8_t read_8(Register &reg);
+    uint16_t read_16(Register &reg);
 
     uint32_t read_32(Register &reg);
 

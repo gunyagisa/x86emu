@@ -35,26 +35,34 @@ uint8_t Memory::read_8(uint32_t addr)
 }
 uint8_t Memory::read_8(Register &reg)
 {
-  printf("read memory %x\n", memory[reg]);
-  return memory[reg];
+  printf("read memory %x\n", memory[reg.read_32()]);
+  return memory[reg.read_32()];
 }
 
 uint16_t Memory::read_16(uint16_t addr)
 {
+  printf("%x:%x at %x\n", memory[addr], memory[addr+1], addr);
   return (memory[addr] | memory[addr+1] << 8);
 }
+
+uint16_t Memory::read_16(Register &reg)
+{
+  return read_16(reg.read_16());
+}
+
+
 
 uint32_t Memory::read_32(uint32_t addr) 
 {
   uint32_t ret = 0;
   for (int i = 0;i < 4;++i) {
-    ret |= (memory[addr + i] << i * 4);
+    ret |= (memory[addr + i] << i * 8);
   }
   return ret;
 }
 
 uint32_t Memory::read_32(Register &reg)
 {
-  uint32_t ret = read_32((int)reg);
+  uint32_t ret = read_32(reg.read_32());
   return ret;
 }

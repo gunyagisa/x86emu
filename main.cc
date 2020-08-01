@@ -27,13 +27,6 @@ int main(int argc, char *argv[])
   len = fread(buf, 1, sizeof(buf), fp);
   fclose(fp);
 
-  /*
-  for (int i = 0;i < len;++i) {
-    printf("%x ", buf[i]);
-  }
-  std::cout << std::endl;
-  */
-
   CPU cpu{buf, 1024, 0x7c00};
   printf("start emulator\n");
   cpu.run();
