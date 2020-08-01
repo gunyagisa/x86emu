@@ -2,6 +2,12 @@
 #include <iostream> 
 #include <vector>
 #include <bitset>
+#include <cstdio>
+
+void set_protected_mode(CPU &cpu)
+{
+  cpu.mode = PROTECTED_MODE;
+}
 
 int main(int argc, char *argv[])
 {
@@ -29,8 +35,8 @@ int main(int argc, char *argv[])
   */
 
   CPU cpu{buf, 1024, 0x7c00};
+  printf("start emulator\n");
   cpu.run();
-  cpu.show_registers();
-
+  cpu.show_segment_registers();
 }
 

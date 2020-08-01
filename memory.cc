@@ -39,6 +39,11 @@ uint8_t Memory::read_8(Register &reg)
   return memory[reg];
 }
 
+uint16_t Memory::read_16(uint16_t addr)
+{
+  return memory[addr + 1] + memory[addr] << 2;
+}
+
 uint32_t Memory::read_32(uint32_t addr) 
 {
   uint32_t ret = 0;
@@ -47,6 +52,7 @@ uint32_t Memory::read_32(uint32_t addr)
   }
   return ret;
 }
+
 uint32_t Memory::read_32(Register &reg)
 {
   uint32_t ret = read_32((int)reg);

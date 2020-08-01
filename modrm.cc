@@ -59,3 +59,60 @@ void ModRM::show()
 {
   printf("modrm mod %x, reg %x, rm %x\n", mod, reg, rm);
 }
+
+void set_rm32(CPU &cpu, ModRM &modrm, uint32_t val)
+{
+  if ( modrm.mod == 3 ) {
+    cpu.registers[modrm.rm] = val;
+  } else {
+    uint32_t addr = modrm.calc_address(cpu);
+    cpu.memory.write_32(addr, val);
+  }
+}
+
+void set_sreg(CPU &cpu, ModRM &modrm, uint16_t val)
+{
+  switch (modrm.reg) {
+    case 0:
+      cpu.es = val;
+      break;
+    case 1:
+      cpu.cs = val;
+      break;
+    case 2:
+      cpu.ss = val;
+      break;
+    case 3:
+      cpu.ds = val;
+      break;
+    case 4:
+      cpu.fs = val;
+      break;
+    case 5:
+      cpu.gs = val;
+      break;
+    default:
+      printf("can not set segment register: modrm.reg %d\n", modrm.reg);
+      break;
+  }
+}
+
+
+uint16_t get_rm16(CPU &cpu, ModRM &modrm)
+{
+  if (modrm.mod == 3) {
+    if (modrm.rm <= 3) {
+      return cpu.registers[modrm.rm] & 0xffff;
+    } else {
+      return cpu.registers[modrm.rm - 4] >> 4;
+    }
+  } else {
+    uint16_t addr = modrm.calc_address(cpu);
+    return cpu.memory.read_16(addr);
+  }
+}
+
+uint32_t get_r32(CPU &cpu, ModRM &modrm)
+{
+  return cpu.registers[modrm.reg];
+}

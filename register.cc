@@ -15,6 +15,7 @@ Register& Register::operator++()
   ++reg;
   return *this;
 }
+
 Register Register::operator++(int)
 {
   Register tmp{*this};

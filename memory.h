@@ -9,8 +9,6 @@ class Memory {
   private:
     int32_t size;
     uint8_t *memory;
-    uint8_t read_8(uint32_t addr);
-    uint32_t read_32(uint32_t addr);
 
   public:
     Memory();
@@ -19,6 +17,10 @@ class Memory {
 
     void write(uint32_t addr, uint8_t data[], uint32_t size);
     void write_32(uint32_t addr, uint32_t val);
+
+    uint8_t read_8(uint32_t addr);
+    uint16_t read_16(uint16_t addr);
+    uint32_t read_32(uint32_t addr);
 
     uint8_t read_8(Register &reg);
 
