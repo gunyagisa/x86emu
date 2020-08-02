@@ -123,6 +123,7 @@ void CPU::decoder()
         printf("val %x\n", val);
         registers[code - 0xb8].write_16(val);
       } else {
+        ModRM modrm;
 
         switch (code) {
           case 0xeb:
@@ -145,12 +146,22 @@ void CPU::decoder()
           case 0x73:
             jnc(*this);
             break;
-          default:
-            for (int i = 0; i < 10; i++) {
-              printf("[E] can not implement: opecede %x, eip: %x\n", code, eip.read_32());
-              eip++;
-              code = get_code8();
+          case 0x83:
+            modrm.set(get_code8());
+            switch (modrm.ext) {
+              case 0:
+                printf("ADD\n");
+                add_rm16_imm8(*this);
+                break;
+              case 7:
+                printf("CPM\n");
+                break;
+              default:
+                break;
             }
+            break;
+          default:
+            printf("can not implement: opecode %02x\n", code);
             show_registers();
             exit(0);
             break;

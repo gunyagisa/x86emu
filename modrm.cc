@@ -1,6 +1,15 @@
 #include "modrm.h"
+#include <bits/stdint-uintn.h>
+
+ModRM::ModRM()
+{}
 
 ModRM::ModRM(const uint8_t code) {
+  set(code);
+}
+
+void ModRM::set(uint8_t code)
+{
   mod = code >> 6;
   reg = (code >> 3) & 0x7;
   rm = code & 0x7;
@@ -8,6 +17,7 @@ ModRM::ModRM(const uint8_t code) {
 
 void ModRM::parse(CPU &cpu)
 {
+  set(cpu.get_code8());
   cpu.eip++;
 
   if (mod != 3 && rm == 4) { // register

@@ -19,7 +19,10 @@ struct ModRM {
     uint32_t disp32;
   };
 
+  ModRM();
   ModRM(uint8_t modrm);
+
+  void set(uint8_t code);
 
   void parse(CPU &cpu);
   uint32_t calc_address(CPU &cpu);

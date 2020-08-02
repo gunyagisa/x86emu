@@ -2,6 +2,7 @@
 #include "register.h"
 #include "modrm.h"
 #include "cpu.h"
+#include <bits/stdint-uintn.h>
 
 namespace Instruction32 {
 
@@ -54,10 +55,20 @@ namespace Instruction16 {
     cpu.registers[0] = imm16;
   }
 
+  void add_rm16_imm8(CPU &cpu)
+  {
+    ModRM modrm;
+    modrm.parse(cpu);
+    uint16_t op2 = cpu.get_code8();
+    cpu.eip++;
+    uint16_t op1 = get_rm16(cpu, modrm);
+    set_rm16(cpu, modrm, op1 + op2);
+  }
+
   // 0x8c
   void mov_rm16_sreg(CPU &cpu)
   {
-    ModRM modrm{cpu.get_code8()};
+    ModRM modrm;
     modrm.parse(cpu);
     uint16_t val = get_sreg(cpu, modrm);
     printf("val 0x%x\n", val);
@@ -68,7 +79,7 @@ namespace Instruction16 {
   // 0x8e
   void mov_sreg_rm16(CPU &cpu)
   {
-    ModRM modrm{cpu.get_code8()};
+    ModRM modrm;
     modrm.parse(cpu);
     uint16_t val = get_rm16(cpu, modrm);
     printf("val 0x%x\n", val);
