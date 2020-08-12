@@ -2,6 +2,7 @@
 #include "instruction.h"
 #include "modrm.h"
 #include "bios.h"
+#include <bits/stdint-uintn.h>
 
 CPU::CPU()
   : memory(), eip()
@@ -131,6 +132,18 @@ void CPU::decoder()
             break;
           case 0xb8:
             mov_r16_imm16(*this);
+            break;
+          case 0x80:
+            modrm.set(get_code8());
+
+            if (modrm.ext == 0) {
+              add_rm8_imm8(*this);
+            } else if (modrm.ext == 7) {
+              cmp(*this);
+            } else {
+              printf("0x%x\n", modrm.ext);
+            }
+    
             break;
           case 0x8c:
             mov_rm16_sreg(*this);

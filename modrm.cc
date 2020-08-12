@@ -69,6 +69,16 @@ void ModRM::show()
   printf("modrm mod %x, reg %x, rm %x\n", mod, reg, rm);
 }
 
+void set_rm8(CPU &cpu, ModRM &modrm, uint8_t val)
+{
+  if (modrm.mod == 3) {
+    cpu.registers[modrm.rm].write_8l(val);
+  } else {
+    uint32_t addr = modrm.calc_address(cpu);
+    cpu.memory.write_8(addr, val);
+  }
+}
+
 void set_rm16(CPU &cpu, ModRM &modrm, uint16_t val)
 {
   if (modrm.mod == 3) {
@@ -116,6 +126,28 @@ void set_sreg(CPU &cpu, ModRM &modrm, uint16_t val)
   }
 }
 
+void set_status_flag(CPU &cpu, uint32_t op1, uint32_t op2)
+{
+  uint32_t result = op1 - op2;
+
+  if (result > 0) {
+    cpu.eflags |= 0x01000000;
+  } else if (result < 0) {
+    cpu.eflags &= 0x1c111111;
+  } else if (result == 0) {
+    cpu.eflags |= 0x02000000;
+  }
+}
+
+uint8_t get_rm8(CPU &cpu, ModRM &modrm)
+{
+  if (modrm.mod == 3) {
+    return cpu.registers[modrm.rm].read_8l();
+  } else {
+    uint32_t addr = modrm.calc_address(cpu);
+    return cpu.memory.read_8(addr);
+  }
+}
 
 uint16_t get_rm16(CPU &cpu, ModRM &modrm)
 {

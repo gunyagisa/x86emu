@@ -64,6 +64,31 @@ namespace Instruction16 {
     uint16_t op1 = get_rm16(cpu, modrm);
     set_rm16(cpu, modrm, op1 + op2);
   }
+  
+  // 0x80
+  void add_rm8_imm8(CPU &cpu)
+  {
+    ModRM modrm;
+    modrm.parse(cpu);
+    uint8_t val = cpu.get_code8();
+    cpu.eip++;
+    uint8_t val2 = get_rm8(cpu, modrm);
+    set_rm8(cpu, modrm, val + val2);
+  }
+
+  void cmp(CPU &cpu)
+  {
+    ModRM modrm;
+    modrm.parse(cpu);
+    
+    uint8_t op1 = get_rm8(cpu, modrm);
+    uint8_t op2 = cpu.get_code8();
+    cpu.eip++;
+
+    set_status_flag(cpu, op1, op2);
+  }
+
+
 
   // 0x8c
   void mov_rm16_sreg(CPU &cpu)
