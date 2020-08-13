@@ -5,4 +5,6 @@
 void software_interrupt(CPU &cpu);
 
 // vector = 0x13
-int disk_service(uint8_t);
+int disk_service(CPU &cpu);
+
+void read_disk(CPU &cpu);
