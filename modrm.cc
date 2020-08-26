@@ -1,4 +1,5 @@
 #include "modrm.h"
+#include "cpu.h"
 #include <bits/stdint-uintn.h>
 
 ModRM::ModRM()
@@ -64,6 +65,37 @@ uint32_t ModRM::calc_address(CPU &cpu)
   }
 }
 
+uint16_t calc_address16(CPU &cpu, ModRM &modrm)
+{
+  if (modrm.mod == 0) {
+    if (modrm.rm == 4) {
+      printf("not implemented.\n");
+      exit(0);
+    } else if (modrm.rm == 5) {
+      return (uint16_t) modrm.disp32;
+    } else {
+      return cpu.registers[modrm.rm].read_16();;
+    }
+  } else if (modrm.mod == 1) {
+    if (modrm.rm == 4) {
+      printf("modrm mod 1 , rm 4\n");
+      exit(1);
+    } else {
+      return cpu.registers[modrm.rm].read_16() + modrm.disp8;
+    }
+  } else if (modrm.mod == 2) {
+    if (modrm.rm == 4) {
+      printf("modrm mod 3 , rm 4\n");
+      exit(1);
+    } else {
+      return cpu.registers[modrm.rm].read_16() + (uint16_t) modrm.disp32;
+    }
+  } else {
+    printf("wrong modrm\n");
+    exit(1);
+  }
+}
+
 void ModRM::show()
 {
   printf("modrm mod %x, reg %x, rm %x\n", mod, reg, rm);
@@ -84,7 +116,7 @@ void set_rm16(CPU &cpu, ModRM &modrm, uint16_t val)
   if (modrm.mod == 3) {
     cpu.registers[modrm.rm].write_16(val);
   } else {
-    uint32_t addr = modrm.calc_address(cpu);
+    uint16_t addr = calc_address16(cpu, modrm);
     cpu.memory.write_16(addr, val);
   }
 }
@@ -136,6 +168,7 @@ void set_status_flag(CPU &cpu, uint32_t op1, uint32_t op2)
     cpu.eflags &= 0x1c111111;
   } else if (result == 0) {
     cpu.eflags |= 0x02000000;
+    printf("Zero Flag!\n");
   }
 }
 
@@ -162,6 +195,15 @@ uint16_t get_rm16(CPU &cpu, ModRM &modrm)
 uint32_t get_r32(CPU &cpu, ModRM &modrm)
 {
   return cpu.registers[modrm.reg].read_32();
+}
+
+uint8_t get_r8(CPU &cpu, ModRM &modrm)
+{
+  if (modrm.reg < 4) {
+    return cpu.registers[modrm.reg].read_8l();
+  } else {
+    return cpu.registers[modrm.reg].read_8h();
+  }
 }
 
 uint16_t get_sreg(CPU &cpu, ModRM &modrm)

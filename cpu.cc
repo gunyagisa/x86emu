@@ -10,7 +10,7 @@ CPU::CPU()
 
 
 CPU::CPU(uint8_t data[], uint32_t size, uint32_t addr)
-  : eip(addr)
+  : memory(), eip(addr)
 {
   memory.write(addr, data, size);
   cs = 0;
@@ -133,6 +133,9 @@ void CPU::decoder()
           case 0xb8:
             mov_r16_imm16(*this);
             break;
+          case 0x76:
+            jbe(*this);
+            break;
           case 0x80:
             modrm.set(get_code8());
 
@@ -156,6 +159,9 @@ void CPU::decoder()
               software_interrupt(*this);
             }
             break;
+          case 0x72:
+            jb(*this);
+            break;
           case 0x73:
             jnc(*this);
             break;
@@ -172,6 +178,9 @@ void CPU::decoder()
               default:
                 break;
             }
+            break;
+          case 0x88:
+            mov_rm8_r8(*this);
             break;
           default:
             printf("can not implement: opecode %02x\n", code);

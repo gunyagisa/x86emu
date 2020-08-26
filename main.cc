@@ -14,14 +14,14 @@ void set_protected_mode(CPU &cpu)
 
 void set_manager(CPU &cpu)
 {
-  cpu.manager.disk_name = "ipl.bin";
+  cpu.manager.disk_name = "geocide.img";
 }
 
 void load_ipl(unsigned char *buf)
 {
   FILE *fp;
 
-  fp = fopen("ipl.bin", "rb");
+  fp = fopen("geocide.img", "rb");
 
 
   fread(buf, sizeof(uint8_t), 512, fp);

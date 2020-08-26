@@ -71,4 +71,6 @@ void read_disk(CPU &cpu)
   fread(buf, sizeof(char), sizeof(buf), fp);
 
   cpu.memory.write(buf_addr, buf, sizeof(buf));
+
+  printf("write %dbyte at 0x%x\n", 512, buf_addr);
 }

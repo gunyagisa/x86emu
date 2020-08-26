@@ -64,6 +64,28 @@ namespace Instruction16 {
     uint16_t op1 = get_rm16(cpu, modrm);
     set_rm16(cpu, modrm, op1 + op2);
   }
+
+  // 0x72
+  void jb(CPU &cpu)
+  {
+    if (cpu.is_cf()) {
+      jmp_short(cpu);
+    } else {
+      cpu.eip++;
+    }
+  }
+
+  // 0x76
+  void jbe(CPU &cpu)
+  {
+    // CF = 1 or ZF = 1
+    if (cpu.is_cf() || ((cpu.eflags & 0x02000000) >> 25) == 1) {
+      jmp_short(cpu);
+    } else {
+      cpu.eip++;
+    }
+  }
+
   
   // 0x80
   void add_rm8_imm8(CPU &cpu)
@@ -85,9 +107,20 @@ namespace Instruction16 {
     uint8_t op2 = cpu.get_code8();
     cpu.eip++;
 
+    printf("compare %d and %d\n", op1, op2);
+
     set_status_flag(cpu, op1, op2);
   }
 
+  // 0x88
+  void mov_rm8_r8(CPU &cpu)
+  {
+    ModRM modrm;
+    modrm.parse(cpu);
+
+    uint8_t val = get_r8(cpu, modrm);
+    set_rm8(cpu, modrm, val);
+  }
 
 
   // 0x8c
