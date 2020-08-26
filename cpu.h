@@ -14,6 +14,11 @@ class ModRM;
 
 class CPU {
   public:
+    struct manager {
+      std::string disk_name;
+    } manager;
+
+
     Memory memory; Register registers[8];
     Register eip;
     Register cr[8];

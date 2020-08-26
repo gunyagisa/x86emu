@@ -47,11 +47,13 @@ int disk_service(CPU &cpu)
   return 0;
 }
 
-void read_disk(CPU &cpu, std::string file_name)
+void read_disk(CPU &cpu)
 {
   uint8_t al, sector, head;
   uint16_t cylinder;
   uint32_t buf_addr;
+
+  std::string file_name = cpu.manager.disk_name;
 
   al = cpu.registers[0].read_8l();
   sector = cpu.registers[1].read_8l() & 0x31;
