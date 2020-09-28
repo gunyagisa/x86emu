@@ -144,7 +144,7 @@ void CPU::decoder()
             } else if (modrm.ext == 7) {
               cmp(*this);
             } else {
-              printf("0x%x\n", modrm.ext);
+              printf("[0x80]: unknown ext:0x%x\n", modrm.ext);
             }
     
             break;
@@ -181,6 +181,10 @@ void CPU::decoder()
             break;
           case 0x88:
             mov_rm8_r8(*this);
+            break;
+
+          case 0xe9:
+            jmp_rel16(this);
             break;
           default:
             printf("can not implement: opecode %02x\n", code);

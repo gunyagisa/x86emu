@@ -15,16 +15,16 @@ void set_protected_mode(CPU &cpu)
   cpu.mode = PROTECTED_MODE;
 }
 
-void set_manager(CPU &cpu)
+void set_manager(CPU &cpu, char *file)
 {
-  cpu.manager.disk_name = "geocide.img";
+  cpu.manager.disk_name = file;
 }
 
-void load_ipl(unsigned char *buf)
+void load_ipl(unsigned char *buf, char *file)
 {
   FILE *fp;
 
-  fp = fopen("geocide.img", "rb");
+  fp = fopen(file, "rb");
 
 
   fread(buf, sizeof(uint8_t), 512, fp);
@@ -43,8 +43,8 @@ void Thread2(CPU &cpu)
 {
   printf("start emulator\n");
   cpu.run();
-  cpu.show_segment_registers();
-  for (;;) {
+
+  while(1) {
   }
 }
 
@@ -57,19 +57,19 @@ int main(int argc, char *argv[])
 
   printf("load ipl\n");
   unsigned char buf[512];
-  load_ipl(buf);
+  load_ipl(buf, argv[1]);
 
   CPU cpu{buf, 512, 0x7c00};
-  set_manager(cpu);
+  set_manager(cpu, argv[1]);
 
   // gpu thread
-  std::thread th1(Thread1, std::ref(cpu), &argc, argv);
-  th1.detach();
   // emulation thread
   std::thread th2(Thread2, std::ref(cpu));
   th2.join();
 
-  printf("finish\n");
+  while (1) {
+  }
 
+  printf("finish\n");
 
 }

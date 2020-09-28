@@ -45,7 +45,6 @@ void Memory::write_32(uint32_t addr, uint32_t val)
 
 uint8_t Memory::read_8(uint32_t addr)
 {
-  printf("read memory %x\n", memory[addr]);
     return memory[addr];
 }
 uint8_t Memory::read_8(Register &reg)
@@ -55,7 +54,6 @@ uint8_t Memory::read_8(Register &reg)
 
 uint16_t Memory::read_16(uint16_t addr)
 {
-  printf("%x:%x at %x\n", memory[addr], memory[addr+1], addr);
   return (memory[addr] | memory[addr+1] << 8);
 }
 

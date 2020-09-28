@@ -11,8 +11,8 @@ ModRM::ModRM(const uint8_t code) {
 
 void ModRM::set(uint8_t code)
 {
-  mod = code >> 6;
-  reg = (code >> 3) & 0x7;
+  mod = (0xc0 & code) >>  6;
+  reg = (code & 0x38) >> 3;
   rm = code & 0x7;
 }
 
@@ -21,15 +21,25 @@ void ModRM::parse(CPU &cpu)
   set(cpu.get_code8());
   cpu.eip++;
 
+  printf("modrm: mod: %x reg: %x rm: %x\n", mod, reg, rm);
+
   if (mod != 3 && rm == 4) { // register
     sib = cpu.get_code8();
     cpu.eip++;
-  } else if ((mod == 0 && rm == 5) || mod == 2) { // disp 32
-    disp32 = cpu.get_code32();
-    cpu.eip += 4;
+  } else if ((mod == 0 && rm == 6) || mod == 2) { // disp 32
+    if (cpu.mode == PROTECTED_MODE) {
+      disp32 = cpu.get_code32();
+      cpu.eip += 4;
+      printf("disp32:%04x\n", disp32);
+    } else if (cpu.mode == REAL_MODE) {
+      disp32 = cpu.get_code16();
+      cpu.eip += 2;
+      printf("disp16:%04x\n", disp32);
+    }
   } else if (mod == 1) { // disp 8
     disp8 = cpu.get_code8();
     cpu.eip++;
+    printf("disp8: %x\n", disp8);
   }
 
 }

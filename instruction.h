@@ -22,4 +22,5 @@ namespace Instruction16 {
   void mov_sreg_rm16(CPU &cpu);
   void mov_rm16_sreg(CPU &cpu);
   void jnc(CPU &cpu);
+  void jmp_rel16(CPU *cpu);
 }

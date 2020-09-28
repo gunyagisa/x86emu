@@ -157,4 +157,10 @@ namespace Instruction16 {
     }
   }
 
+  void jmp_rel16(CPU *cpu) {
+    uint16_t rel16 = cpu->get_code16();
+    printf("JMP rel16: %x\n", rel16);
+    cpu->eip += 2;
+    cpu->eip += rel16;
+  }
 }
