@@ -17,4 +17,8 @@ add_executable(
   bios.cc
   )
 
+include_directories(/usr/local/include)
+link_directories(/usr/local/lib)
+target_link_libraries(x86emu glut GL pthread)
+
 set(EXECUTABLE_OUTPUT_PATH ../)

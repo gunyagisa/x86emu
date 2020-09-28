@@ -19,7 +19,8 @@ class CPU {
     } manager;
 
 
-    Memory memory; Register registers[8];
+    Memory memory; 
+    Register registers[8];
     Register eip;
     Register cr[8];
     uint16_t cs, ds, es, ss, fs, gs;

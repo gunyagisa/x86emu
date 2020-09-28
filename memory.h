@@ -16,6 +16,8 @@ class Memory {
     Memory(uint32_t);
     ~Memory();
 
+    operator uint8_t * () { return memory; }
+
     void write(uint32_t addr, uint8_t data[], uint32_t size);
     void write_8(uint32_t addr, uint8_t val);
     void write_16(uint32_t  addr, uint16_t val);
