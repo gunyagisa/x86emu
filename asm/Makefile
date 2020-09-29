@@ -1,17 +1,14 @@
 .PHONY: clean
 
-bin: test.asm
-	nasm -o test.bin test.asm
+asmhead.bin: asmhead.asm
+	nasm $< -o $@
 
-elf: test.asm
-	nasm -f elf64 test.asm
-	ld test.o
+ipl.bin: ipl.asm
+	nasm $< -o $@
 
-dump: elf
-	objdump -d a.out -M intel
+test.sys: asmhead.bin
+	cat asmhead.bin > test.sys
 
-run: elf
-	./a.out
-
-clean:
-	rm -f *.o *.bin a.out
+test.img: test.sys ipl.bin
+	mformat -f 1440 -C -B ./ipl.bin -i test.img ::
+	mcopy test.sys -i test.img ::
