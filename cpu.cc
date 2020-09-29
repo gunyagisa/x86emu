@@ -3,6 +3,7 @@
 #include "modrm.h"
 #include "bios.h"
 #include <bits/stdint-uintn.h>
+#include <cstdio>
 #include <cstdlib>
 #include <ostream>
 
@@ -89,10 +90,9 @@ bool CPU::is_zf()
 void CPU::decoder()
 {
   for (;;) {
-    show_registers();
     using namespace Instruction16;
     uint8_t code = get_code8();
-    printf("code %x\n", code);
+    printf("code=%02x, eip=0x%08x\n", code, (uint32_t)eip);
     eip++;
 
     if (0xb0 <= code && code <= 0xb7) {
@@ -103,10 +103,9 @@ void CPU::decoder()
       } else {
         registers[code - 0xb0 - 4].write_8h(val);
       }
-    } else if (0xb8 <= code && code <= 0xbf && mode == REAL_MODE) {
+    } else if (mode == REAL_MODE && 0xb8 <= code && code <= 0xbf) {
       uint16_t val = get_code16();
       eip += 2;
-      printf("val %x\n", val);
       registers[code - 0xb8].write_16(val);
     } else if (0x40 <= code && code <= 0x47) {
       inc(this, code - 0x40);
@@ -171,11 +170,9 @@ void CPU::decoder()
           modrm.set(get_code8());
           switch (modrm.ext) {
             case 0:
-              printf("ADD\n");
               add_rm16_imm8(*this);
               break;
             case 7:
-              printf("CPM\n");
               break;
             default:
               break;
@@ -220,7 +217,6 @@ void CPU::decoder()
               add_rm32_imm8(registers[modrm.rm], num);
             } else if ( code == 0x89 ) {
               mov_rm32_r32(*this);
-              std::cout << "mov_rm32_r32" << std::endl;
             } else if (code == 0x81) {
               cmp_rm_imm(this);
             } else {

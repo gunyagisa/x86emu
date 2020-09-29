@@ -4,17 +4,17 @@
 
 Memory::Memory() : size(0xfffffff)
 {
-    memory = new uint8_t[size];
+  memory = new uint8_t[size];
 }
 
 Memory::Memory(uint32_t size) : size(size)
 {
-    memory = new uint8_t[size];
+  memory = new uint8_t[size];
 }
 
 Memory::~Memory()
 {
-    delete memory;
+  delete memory;
 }
 
 void Memory::write(uint32_t addr, uint8_t data[], uint32_t size)
@@ -38,43 +38,7 @@ void Memory::write_16(uint32_t addr, uint16_t val)
 void Memory::write_32(uint32_t addr, uint32_t val)
 {
   for (int i = 0; i < 4; ++i) {
-    memory[addr + i] = (val & 0x000000ff);
-    val = val >> 8;
+    write_8(addr + i, val >> (i * 8));
   }
 }
 
-uint8_t Memory::read_8(uint32_t addr)
-{
-    return memory[addr];
-}
-uint8_t Memory::read_8(Register &reg)
-{
-  return read_8(reg.read_32());
-}
-
-uint16_t Memory::read_16(uint16_t addr)
-{
-  return (memory[addr] | memory[addr+1] << 8);
-}
-
-uint16_t Memory::read_16(Register &reg)
-{
-  return read_16(reg.read_16());
-}
-
-
-
-uint32_t Memory::read_32(uint32_t addr) 
-{
-  uint32_t ret = 0;
-  for (int i = 0;i < 4;++i) {
-    ret |= (memory[addr + i] << i * 8);
-  }
-  return ret;
-}
-
-uint32_t Memory::read_32(Register &reg)
-{
-  uint32_t ret = read_32(reg.read_32());
-  return ret;
-}

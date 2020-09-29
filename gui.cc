@@ -1,4 +1,5 @@
 #include <GL/freeglut_std.h>
+#include <GL/gl.h>
 #include <bits/stdint-uintn.h>
 #include <cstdio>
 #include <cstdlib>
@@ -17,8 +18,7 @@ class GUI {
     GUI() {};
     GUI(unsigned int width, unsigned int height, uint8_t *vram)
     {
-      Init(width, height, vram);
-    }
+      Init(width, height, vram); }
 
     ~GUI() {}
 
@@ -102,10 +102,11 @@ void idle()
 void start(GUI &gui, int *argc, char **argv)
 {
   glutInit(argc, argv);
-  glutInitWindowSize(gui.get_width(), gui.get_height());
-  glutInitDisplayMode(GLUT_RGB);
+  glutInitWindowSize(gui.get_width() * 2, gui.get_height() * 2);
+  glutInitDisplayMode(GLUT_RGBA);
   glutCreateWindow("GUI TEST");
   glutDisplayFunc(disp);
   glutIdleFunc(idle);
+  glPixelZoom(2.0, 2.0);
   glutMainLoop();
 }

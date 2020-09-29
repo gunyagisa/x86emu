@@ -169,6 +169,7 @@ void set_rm32(CPU &cpu, ModRM &modrm, uint32_t val)
     cpu.registers[modrm.rm].write_32(val);
   } else {
     uint32_t addr = modrm.calc_address(cpu);
+    printf("addr %08x\n", addr);
     cpu.memory.write_32(addr, val);
   }
 }

@@ -4,21 +4,18 @@ bits 32
 VRAM equ   0xa0000
 
 boot_main:
-  mov   esi, 0
   mov   ebx, VRAM
+  mov   ecx, 16
 
 loop:
-  mov   edx, 0x07
-  call  write8
-  add   esi, 1
+  mov   eax, ebx
+  div   ecx
+  mov   al, dl
+  mov   byte [ebx], al
   add   ebx, 1
-  cmp   esi, 0xffff
-  jbe    loop
+  cmp   ebx, 0xaffff
+  jbe   loop
 
 fin:
   hlt
   jmp   fin
-
-write8:
-  mov   [ebx], edx
-  ret

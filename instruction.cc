@@ -17,10 +17,9 @@ namespace Instruction32 {
   // 0x89
   void mov_rm32_r32(CPU &cpu)
   {
-    ModRM modrm{cpu.get_code8()};
+    ModRM modrm;
     modrm.parse(cpu);
     uint32_t val = get_r32(cpu, modrm);
-    printf("val: %d\n", val);
     set_rm32(cpu, modrm, val);
   }
 
@@ -43,12 +42,12 @@ namespace Instruction32 {
     uint32_t dst = cpu->get_code32();
     cpu->eip += 4;
 
-    cpu->eip = 0xc225;
+    cpu->eip = 0xc222;
   }
 
   void ret(CPU *cpu)
   {
-    cpu->eip = 0xc217;
+    cpu->eip = 0xc214;
   }
 
 }
@@ -67,8 +66,8 @@ namespace Instruction16 {
   // 0x3d
   void cmp_eax(CPU *cpu) 
   {
-    uint16_t op = cpu->get_code16();
-    cpu->eip += 2;
+    uint32_t op = cpu->get_code32();
+    cpu->eip += 4;
     uint16_t op2 = cpu->registers[0].read_16();
     set_status_flag(*cpu, op, op2);
   }
@@ -87,10 +86,14 @@ namespace Instruction16 {
 
   void mov_rm_r(CPU *cpu) 
   {
+    if (cpu->mode == PROTECTED_MODE) {
+      Instruction32::mov_rm32_r32(*cpu);
+      return;
+    }
     ModRM modrm;
     modrm.parse(*cpu);
 
-    uint8_t op = get_r(*cpu, modrm);
+    uint16_t op = get_r(*cpu, modrm);
     set_rm(*cpu, modrm, op);
   }
 
@@ -197,7 +200,6 @@ namespace Instruction16 {
     ModRM modrm;
     modrm.parse(cpu);
     uint16_t val = get_sreg(cpu, modrm);
-    printf("val 0x%x\n", val);
     set_rm16(cpu, modrm, val);
   }
 
@@ -208,7 +210,6 @@ namespace Instruction16 {
     ModRM modrm;
     modrm.parse(cpu);
     uint16_t val = get_rm16(cpu, modrm);
-    printf("val 0x%x\n", val);
     set_sreg(cpu, modrm, val);
 
     cpu.show_segment_registers();
@@ -264,10 +265,9 @@ namespace Instruction16 {
     modrm.parse(*cpu);
     uint32_t op = get_rm32(*cpu, modrm);
     uint32_t a = cpu->registers[0].read_32();
-    printf("a=%d, op=%d\n", a, op);
-    fflush(stdout);
     uint32_t r = a % op;
     uint16_t p = a / op;
+    printf("div: a=%02x, op=%02x, p=%02x, r=%02x\n", a, op, p, r); 
     cpu->registers[0].write_32(p);
     cpu->registers[2].write_32(r);
   }
