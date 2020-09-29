@@ -3,6 +3,7 @@
 #include "modrm.h"
 #include "cpu.h"
 #include <bits/stdint-uintn.h>
+#include <ostream>
 
 namespace Instruction32 {
 
@@ -38,6 +39,48 @@ namespace Instruction32 {
 }
 
 namespace Instruction16 {
+  // 0x00 add
+  void add_rm8_r8(CPU *cpu)
+  {
+    ModRM modrm;
+    modrm.parse(*cpu);
+    uint8_t op2 = get_r8(*cpu, modrm);
+    uint8_t op1 = get_rm8(*cpu, modrm);
+    set_rm8(*cpu, modrm, op1 + op2);
+  }
+
+  // 0x3d
+  void cmp_eax(CPU *cpu) 
+  {
+    uint16_t op = cpu->get_code16();
+    cpu->eip += 2;
+    uint16_t op2 = cpu->registers[0].read_16();
+    set_status_flag(*cpu, op, op2);
+  }
+
+  // 0x40 inc
+  void inc(CPU *cpu, int reg)
+  {
+    if (cpu->mode == REAL_MODE) {
+      uint16_t tmp = cpu->registers[reg].read_16();
+      cpu->registers[reg].write_16(tmp + 1);
+    } else if (cpu->mode == PROTECTED_MODE) {
+      uint32_t tmp = cpu->registers[reg].read_32();
+      cpu->registers[reg].write_32(tmp + 1);
+    }
+  }
+
+  //0xc6 mov
+  void mov_rm8_imm8(CPU *cpu)
+  {
+    ModRM modrm;
+    modrm.parse(*cpu);
+
+    uint8_t op = cpu->get_code8();
+    cpu->eip++;
+    set_rm8(*cpu, modrm, op);
+  }
+
   // 0xeb JMP
   void jmp_short(CPU &cpu)
   {
@@ -78,15 +121,16 @@ namespace Instruction16 {
   // 0x76
   void jbe(CPU &cpu)
   {
+    std::cout << "jbe CF==" << cpu.is_cf() << std::endl;
     // CF = 1 or ZF = 1
-    if (cpu.is_cf() || ((cpu.eflags & 0x02000000) >> 25) == 1) {
+    if (cpu.is_cf() || cpu.is_zf()) {
       jmp_short(cpu);
     } else {
       cpu.eip++;
     }
   }
 
-  
+
   // 0x80
   void add_rm8_imm8(CPU &cpu)
   {
@@ -102,7 +146,7 @@ namespace Instruction16 {
   {
     ModRM modrm;
     modrm.parse(cpu);
-    
+
     uint8_t op1 = get_rm8(cpu, modrm);
     uint8_t op2 = cpu.get_code8();
     cpu.eip++;
@@ -157,10 +201,24 @@ namespace Instruction16 {
     }
   }
 
+  //0x7f
+  void jg(CPU *cpu) {
+    if (cpu->is_cf() == false) {
+      jmp_short(*cpu);
+    } else {
+      cpu->eip += 2;
+    }
+  }
+
   void jmp_rel16(CPU *cpu) {
     uint16_t rel16 = cpu->get_code16();
     printf("JMP rel16: %x\n", rel16);
     cpu->eip += 2;
     cpu->eip += rel16;
+  }
+
+  void hlt(CPU *cpu) {
+    printf("HLT\n");
+    return;
   }
 }

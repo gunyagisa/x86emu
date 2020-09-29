@@ -2,7 +2,10 @@
 #include "cpu.h"
 #include <bits/stdint-uintn.h>
 #include <bits/types/FILE.h>
+#include <cerrno>
 #include <cstdio>
+#include <cstdlib>
+#include <errno.h>
 
 void software_interrupt(CPU &cpu)
 {
@@ -56,19 +59,30 @@ void read_disk(CPU &cpu)
   std::string file_name = cpu.manager.disk_name;
 
   al = cpu.registers[0].read_8l();
-  sector = cpu.registers[1].read_8l() & 0x31;
-  cylinder = (cpu.registers[1].read_8l() & 0xc0) | cpu.registers[1].read_8h(); 
+  sector = cpu.registers[1].read_8l() & 0x3f;
+  cylinder = (uint16_t)((cpu.registers[1].read_8l() & 0xc0) >> 6) << 8| cpu.registers[1].read_8h(); 
   buf_addr = cpu.es * 16 + cpu.registers[3].read_16();
   head = cpu.registers[2].read_8h();
 
-  long offset;
+  printf("sector: %d, cylinder: %d, head: %d\n", sector, cylinder, head);
+
+  long offset = (80 * 18 * 512) * head + 512 * sector + cylinder * (512 * 18);
 
   FILE *fp;
   fp = fopen(file_name.c_str(), "rb");
-  fseek(fp, offset, SEEK_SET);
+  if (fseek(fp, offset, SEEK_SET) != 0) {
+    fprintf(stderr, "[e] fseek\n");
+    exit(1);
+  }
 
   unsigned char buf[512];
+  
+  errno = 0;
   fread(buf, sizeof(char), sizeof(buf), fp);
+  if (errno != 0) {
+    perror("fread");
+    exit(1);
+  }
 
   cpu.memory.write(buf_addr, buf, sizeof(buf));
 

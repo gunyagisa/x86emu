@@ -46,6 +46,10 @@ void ModRM::parse(CPU &cpu)
 
 uint32_t ModRM::calc_address(CPU &cpu)
 {
+  if (cpu.mode == REAL_MODE) {
+    uint16_t addr = calc_address16(cpu, *this);
+    return addr;
+  }
   if (mod == 0) {
     if (rm == 4) {
       printf("not implemented.\n");
@@ -63,7 +67,9 @@ uint32_t ModRM::calc_address(CPU &cpu)
       return cpu.registers[rm].read_32() + disp8;
     }
   } else if (mod == 2) {
-    if (rm == 4) {
+    if (rm == 0) {
+      return cpu.registers[reg].read_32() + disp32;
+    } else if (rm == 4) {
       printf("modrm mod 3 , rm 4\n");
       exit(1);
     } else {
@@ -78,11 +84,16 @@ uint32_t ModRM::calc_address(CPU &cpu)
 uint16_t calc_address16(CPU &cpu, ModRM &modrm)
 {
   if (modrm.mod == 0) {
-    if (modrm.rm == 4) {
+    if (modrm.rm == 0) {
+      uint16_t ret = cpu.registers[3].read_16() + cpu.registers[6].read_16();
+      std::cout << "calc: " << ret << std::endl;
+    } else if (modrm.rm == 4) {
       printf("not implemented.\n");
       exit(0);
     } else if (modrm.rm == 5) {
       return (uint16_t) modrm.disp32;
+    } else if (modrm.rm == 7) {
+      return cpu.registers[3].read_16();
     } else {
       return cpu.registers[modrm.rm].read_16();;
     }
@@ -94,7 +105,9 @@ uint16_t calc_address16(CPU &cpu, ModRM &modrm)
       return cpu.registers[modrm.rm].read_16() + modrm.disp8;
     }
   } else if (modrm.mod == 2) {
-    if (modrm.rm == 4) {
+    if (modrm.rm == 0) {
+      return cpu.registers[3].read_16() + cpu.registers[6].read_16() + modrm.disp8;
+    } else if (modrm.rm == 4) {
       printf("modrm mod 3 , rm 4\n");
       exit(1);
     } else {
@@ -114,9 +127,14 @@ void ModRM::show()
 void set_rm8(CPU &cpu, ModRM &modrm, uint8_t val)
 {
   if (modrm.mod == 3) {
-    cpu.registers[modrm.rm].write_8l(val);
+    if (modrm.rm <= 3) {
+      cpu.registers[modrm.rm].write_8l(val);
+    } else {
+      cpu.registers[modrm.rm - 4].write_8h(val);
+    }
   } else {
     uint32_t addr = modrm.calc_address(cpu);
+    printf("write addr: 0x%x\n", addr);
     cpu.memory.write_8(addr, val);
   }
 }
@@ -170,22 +188,31 @@ void set_sreg(CPU &cpu, ModRM &modrm, uint16_t val)
 
 void set_status_flag(CPU &cpu, uint32_t op1, uint32_t op2)
 {
-  uint32_t result = op1 - op2;
+  int32_t result = op1 - op2;
 
   if (result > 0) {
-    cpu.eflags |= 0x01000000;
+    cpu.eflags &= 0x7fffffff;
+    cpu.eflags &= ~(0x02000000);
+    printf("Carry Flag Off!\n");
   } else if (result < 0) {
-    cpu.eflags &= 0x1c111111;
+    cpu.eflags |= 0x80000000;
+    cpu.eflags &= ~(0x02000000);
+    printf("Carry Flag On!\n");
   } else if (result == 0) {
     cpu.eflags |= 0x02000000;
     printf("Zero Flag!\n");
   }
+  printf("eflags: 0x%x\n", cpu.eflags);
 }
 
 uint8_t get_rm8(CPU &cpu, ModRM &modrm)
 {
   if (modrm.mod == 3) {
-    return cpu.registers[modrm.rm].read_8l();
+    if (modrm.rm <= 3) {
+      return cpu.registers[modrm.rm].read_8l();
+    } else {
+      return cpu.registers[modrm.rm - 4].read_8h();
+    }
   } else {
     uint32_t addr = modrm.calc_address(cpu);
     return cpu.memory.read_8(addr);

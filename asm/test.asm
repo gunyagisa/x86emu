@@ -1,11 +1,9 @@
+org 0x7c00
 bits 32
 
-section .text
-global _start
 
-_start:
-  mov eax, 0x04
-  add eax, 0x01
-  mov ebx, eax
+jmp 0x2c00
 
-  jmp 0x0
+loop:
+  hlt
+  jmp   loop

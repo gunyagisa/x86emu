@@ -2,7 +2,7 @@
 #include "register.h"
 #include <bits/stdint-uintn.h>
 
-Memory::Memory() : size(0xfffff)
+Memory::Memory() : size(0xffffff)
 {
     memory = new uint8_t[size];
 }

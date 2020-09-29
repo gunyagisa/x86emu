@@ -53,6 +53,7 @@ class CPU {
     void run() { decoder(); }
 
     bool is_cf();
+    bool is_zf();
 
     uint8_t get_code8();
     uint16_t get_code16();

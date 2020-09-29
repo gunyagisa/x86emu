@@ -63,6 +63,8 @@ int main(int argc, char *argv[])
   set_manager(cpu, argv[1]);
 
   // gpu thread
+  std::thread th1(Thread1, std::ref(cpu), &argc, argv);
+  th1.detach();
   // emulation thread
   std::thread th2(Thread2, std::ref(cpu));
   th2.join();
@@ -71,5 +73,4 @@ int main(int argc, char *argv[])
   }
 
   printf("finish\n");
-
 }
