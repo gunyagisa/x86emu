@@ -3,6 +3,8 @@
 #include "modrm.h"
 #include "bios.h"
 #include <bits/stdint-uintn.h>
+#include <cstdlib>
+#include <ostream>
 
 CPU::CPU()
   : memory(), eip()
@@ -209,7 +211,10 @@ void CPU::decoder()
           }
         } else {
           show_registers();
-          fprintf(stderr, "can not implement: opecode 0x%08x\n", code);
+            std::cout << "[E] can not implement: opecode "
+              << std::showbase << std::hex << (int)code
+              << ", eip: " << eip << std::noshowbase << std::endl;
+            show_registers();
           exit(1);
           break;
         }

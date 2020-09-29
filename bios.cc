@@ -66,7 +66,8 @@ void read_disk(CPU &cpu)
 
   printf("sector: %d, cylinder: %d, head: %d\n", sector, cylinder, head);
 
-  long offset = (80 * 18 * 512) * head + 512 * sector + cylinder * (512 * 18);
+  long offset = 512 * (sector - 1) + 512 * 18 * head + 512 * 18 * 2 * cylinder;
+  printf("offset: 0x%08x\n", offset);
 
   FILE *fp;
   fp = fopen(file_name.c_str(), "rb");
