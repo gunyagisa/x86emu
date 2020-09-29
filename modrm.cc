@@ -124,6 +124,20 @@ void ModRM::show()
   printf("modrm mod %x, reg %x, rm %x\n", mod, reg, rm);
 }
 
+void set_rm(CPU &cpu, ModRM &modrm, uint32_t val)
+{
+  switch (cpu.mode) {
+    case REAL_MODE:
+      set_rm16(cpu, modrm, val);
+      break;
+    case PROTECTED_MODE:
+      set_rm32(cpu, modrm, val);
+      break;
+    default:
+      break;
+  }
+}
+
 void set_rm8(CPU &cpu, ModRM &modrm, uint8_t val)
 {
   if (modrm.mod == 3) {
@@ -205,6 +219,16 @@ void set_status_flag(CPU &cpu, uint32_t op1, uint32_t op2)
   printf("eflags: 0x%x\n", cpu.eflags);
 }
 
+uint32_t get_rm32(CPU &cpu, ModRM &modrm)
+{
+  if (modrm.mod == 3) {
+    return cpu.registers[modrm.rm].read_32();
+  } else {
+    uint32_t addr = modrm.calc_address(cpu);
+    return cpu.memory.read_32(addr);
+  }
+}
+
 uint8_t get_rm8(CPU &cpu, ModRM &modrm)
 {
   if (modrm.mod == 3) {
@@ -229,9 +253,28 @@ uint16_t get_rm16(CPU &cpu, ModRM &modrm)
   }
 }
 
+uint32_t get_r(CPU &cpu, ModRM &modrm)
+{
+  switch (cpu.mode) {
+    case REAL_MODE:
+      return get_r16(cpu, modrm);
+      break;
+    case PROTECTED_MODE:
+      return get_r32(cpu, modrm);
+      break;
+    default:
+      break;
+  }
+}
+
 uint32_t get_r32(CPU &cpu, ModRM &modrm)
 {
   return cpu.registers[modrm.reg].read_32();
+}
+
+uint16_t get_r16(CPU &cpu, ModRM &modrm)
+{
+  return cpu.registers[modrm.reg].read_16();
 }
 
 uint8_t get_r8(CPU &cpu, ModRM &modrm)

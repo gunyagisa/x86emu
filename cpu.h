@@ -54,6 +54,7 @@ class CPU {
 
     bool is_cf();
     bool is_zf();
+    void trans2protect();
 
     uint8_t get_code8();
     uint16_t get_code16();

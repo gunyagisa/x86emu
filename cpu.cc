@@ -21,7 +21,7 @@ CPU::CPU(uint8_t data[], uint32_t size, uint32_t addr)
   es = 0;
   fs = 0;
   gs = 0;
-  mode = REAL_MODE; 
+  mode = REAL_MODE;
 }
 
 CPU::~CPU() {}
@@ -33,6 +33,13 @@ void CPU::show_registers()
   }
 
   std::cout << "eip: " << eip << std::endl;
+}
+
+void CPU::trans2protect()
+{
+  mode = PROTECTED_MODE;
+
+  printf("trans2protect\n");
 }
 
 void CPU::show_segment_registers()
@@ -77,7 +84,7 @@ bool CPU::is_zf()
     return true;
   else 
     return false;
-  }
+}
 
 void CPU::decoder()
 {
@@ -87,6 +94,7 @@ void CPU::decoder()
     uint8_t code = get_code8();
     printf("code %x\n", code);
     eip++;
+
     if (0xb0 <= code && code <= 0xb7) {
       uint8_t val = get_code8();
       eip++;
@@ -95,7 +103,7 @@ void CPU::decoder()
       } else {
         registers[code - 0xb0 - 4].write_8h(val);
       }
-    } else if (0xb8 <= code && code <= 0xbf) {
+    } else if (0xb8 <= code && code <= 0xbf && mode == REAL_MODE) {
       uint16_t val = get_code16();
       eip += 2;
       printf("val %x\n", val);
@@ -136,6 +144,9 @@ void CPU::decoder()
           }
 
           break;
+        case 0x89:
+          mov_rm_r(this);
+          break;
         case 0x8c:
           mov_rm16_sreg(*this);
           break;
@@ -173,51 +184,61 @@ void CPU::decoder()
         case 0x88:
           mov_rm8_r8(*this);
           break;
-
+        case 0xe8:
+          Instruction32::call(this);
+          break;
+        case 0xc3:
+          Instruction32::ret(this);
+          break;
         case 0xe9:
           jmp_rel16(this);
           break;
         case 0xf4:
           hlt(this);
           break;
-        default:
-        if (mode == PROTECTED_MODE) {
-          using namespace Instruction32;
-          if (0xb8 <= code && code <= 0xbf) {
-            std::cout << "mov" << std::endl;
-            uint32_t num = memory.read_32(eip);
-            eip += 4;
-            mov_r32_imm32(registers[code - 0xb8], num);
-          } else if ( code == 0x05 ) {
-            uint32_t num = get_code32();
-            eip += 4;
-            add_eax_imm32(registers[0], num);
-          } else if ( code == 0x83 ) {
-            std::cout << "add" << std::endl;
-            ModRM modrm{memory.read_8(eip)};
-            eip++;
-            uint8_t num = memory.read_8(eip);
-            eip++;
-            add_rm32_imm8(registers[modrm.rm], num);
-          } else if ( code == 0x89 ) {
-            mov_rm32_r32(*this);
-            std::cout << "mov_rm32_r32" << std::endl;
-          } else {
-            std::cout << "[E] can not implement: opecode "
-              << std::showbase << std::hex << (int)code
-              << ", eip: " << eip << std::noshowbase << std::endl;
-            show_registers();
-            exit(0);
-          }
-        } else {
-          show_registers();
-            std::cout << "[E] can not implement: opecode "
-              << std::showbase << std::hex << (int)code
-              << ", eip: " << eip << std::noshowbase << std::endl;
-            show_registers();
-          exit(1);
+        case 0xf7:
+          div_r32(this);
           break;
-        }
+        default:
+          if (mode == PROTECTED_MODE) {
+            using namespace Instruction32;
+            if (0xb8 <= code && code <= 0xbf) {
+              std::cout << "mov" << std::endl;
+              uint32_t num = memory.read_32(eip);
+              eip += 4;
+              mov_r32_imm32(registers[code - 0xb8], num);
+            } else if ( code == 0x05 ) {
+              uint32_t num = get_code32();
+              eip += 4;
+              add_eax_imm32(registers[0], num);
+            } else if ( code == 0x83 ) {
+              std::cout << "add" << std::endl;
+              ModRM modrm{memory.read_8(eip)};
+              eip++;
+              uint8_t num = memory.read_8(eip);
+              eip++;
+              add_rm32_imm8(registers[modrm.rm], num);
+            } else if ( code == 0x89 ) {
+              mov_rm32_r32(*this);
+              std::cout << "mov_rm32_r32" << std::endl;
+            } else if (code == 0x81) {
+              cmp_rm_imm(this);
+            } else {
+              std::cout << "[E] can not implement: opecode "
+                << std::showbase << std::hex << (int)code
+                << ", eip: " << eip << std::noshowbase << std::endl;
+              show_registers();
+              exit(0);
+            }
+          } else {
+            show_registers();
+            std::cout << "[E] can not implement: opecode "
+              << std::showbase << std::hex << (int)code
+              << ", eip: " << eip << std::noshowbase << std::endl;
+            show_registers();
+            exit(1);
+            break;
+          }
       } 
     } 
   }

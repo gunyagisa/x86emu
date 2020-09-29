@@ -3,6 +3,7 @@
 #include "modrm.h"
 #include "cpu.h"
 #include <bits/stdint-uintn.h>
+#include <cstdio>
 #include <ostream>
 
 namespace Instruction32 {
@@ -34,6 +35,20 @@ namespace Instruction32 {
   void add_rm32_imm8(Register &dst_reg, uint8_t num)
   {
     dst_reg += num;
+  }
+
+  // 0xe8
+  void call(CPU *cpu)
+  {
+    uint32_t dst = cpu->get_code32();
+    cpu->eip += 4;
+
+    cpu->eip = 0xc225;
+  }
+
+  void ret(CPU *cpu)
+  {
+    cpu->eip = 0xc217;
   }
 
 }
@@ -68,6 +83,15 @@ namespace Instruction16 {
       uint32_t tmp = cpu->registers[reg].read_32();
       cpu->registers[reg].write_32(tmp + 1);
     }
+  }
+
+  void mov_rm_r(CPU *cpu) 
+  {
+    ModRM modrm;
+    modrm.parse(*cpu);
+
+    uint8_t op = get_r(*cpu, modrm);
+    set_rm(*cpu, modrm, op);
   }
 
   //0xc6 mov
@@ -215,6 +239,37 @@ namespace Instruction16 {
     printf("JMP rel16: %x\n", rel16);
     cpu->eip += 2;
     cpu->eip += rel16;
+    if (cpu->eip == 0xc200)
+      cpu->trans2protect();
+  }
+
+  // 0x81
+  void cmp_rm_imm(CPU *cpu)
+  {
+    ModRM modrm;
+    modrm.parse(*cpu);
+
+    uint32_t op = cpu->get_code32();
+    cpu->eip += 4;
+    uint32_t op2 = get_rm32(*cpu, modrm);
+
+    set_status_flag(*cpu, op2, op);
+  }
+
+
+  // 0xf7
+  void div_r32(CPU *cpu)
+  {
+    ModRM modrm;
+    modrm.parse(*cpu);
+    uint32_t op = get_rm32(*cpu, modrm);
+    uint32_t a = cpu->registers[0].read_32();
+    printf("a=%d, op=%d\n", a, op);
+    fflush(stdout);
+    uint32_t r = a % op;
+    uint16_t p = a / op;
+    cpu->registers[0].write_32(p);
+    cpu->registers[2].write_32(r);
   }
 
   void hlt(CPU *cpu) {

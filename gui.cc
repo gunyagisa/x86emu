@@ -1,3 +1,4 @@
+#include <GL/freeglut_std.h>
 #include <bits/stdint-uintn.h>
 #include <cstdio>
 #include <cstdlib>
@@ -93,14 +94,18 @@ void disp()
   glFlush();
 }
 
+void idle()
+{
+  glutPostRedisplay();
+}
+
 void start(GUI &gui, int *argc, char **argv)
 {
-  printf("%x\n", gui.vram);
   glutInit(argc, argv);
   glutInitWindowSize(gui.get_width(), gui.get_height());
   glutInitDisplayMode(GLUT_RGB);
   glutCreateWindow("GUI TEST");
   glutDisplayFunc(disp);
+  glutIdleFunc(idle);
   glutMainLoop();
 }
-

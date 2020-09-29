@@ -1,4 +1,5 @@
 #pragma once
+#include <bits/stdint-uintn.h>
 #include <string>
 #include <iostream>
 
@@ -12,6 +13,8 @@ public:
   Register(const Register &src);
 
   void setname(std::string name) { name = name; }
+
+  operator uint32_t() { return reg; }
 
   void write_8h(uint8_t val);
   void write_8l(uint8_t val);
