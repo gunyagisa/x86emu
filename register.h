@@ -33,3 +33,44 @@ public:
   Register operator++(int);
   Register& operator+=(const Register& rhs) { reg += rhs.reg; return *this; }
 };
+
+inline void Register::write_8h(uint8_t val)
+{
+  reg = (reg & 0xffff00ff) | (val << 8);
+}
+
+inline void Register::write_8l(uint8_t val)
+{
+  reg = (reg & 0xffffff00) | val;
+}
+
+inline void Register::write_16(uint16_t val)
+{
+  reg = (reg & 0xffff0000) | val;
+}
+
+inline void Register::write_32(uint32_t val)
+{
+  reg = val;
+}
+
+inline uint8_t Register::read_8h(void)
+{
+  return (reg & 0xff00) >> 8;
+}
+
+inline uint8_t Register::read_8l(void)
+{
+  return (reg & 0xff);
+}
+
+inline uint16_t Register::read_16(void)
+{
+  return (reg & 0xffff);
+}
+
+inline uint32_t Register::read_32(void)
+{
+  return reg;
+}
+

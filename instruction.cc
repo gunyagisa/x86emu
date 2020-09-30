@@ -267,7 +267,6 @@ namespace Instruction16 {
     uint32_t a = cpu->registers[0].read_32();
     uint32_t r = a % op;
     uint16_t p = a / op;
-    printf("div: a=%02x, op=%02x, p=%02x, r=%02x\n", a, op, p, r); 
     cpu->registers[0].write_32(p);
     cpu->registers[2].write_32(r);
   }

@@ -53,39 +53,6 @@ void CPU::show_segment_registers()
   printf("gs = 0x%x\n", gs);
 }
 
-uint8_t CPU::get_code8()
-{
-  uint8_t code = memory.read_8(eip);
-  return code;
-}
-
-uint16_t CPU::get_code16()
-{
-  uint16_t code = memory.read_16(eip);
-  return code;
-}
-
-uint32_t CPU::get_code32()
-{
-  uint32_t code = memory.read_32(eip);
-  return code;
-}
-
-bool CPU::is_cf()
-{
-  if ((eflags & 0x80000000) >> 31 == 1)
-    return true;
-  else 
-    return false;
-}
-
-bool CPU::is_zf()
-{
-  if ((eflags & 0x02000000) >> 25 == 1)
-    return true;
-  else 
-    return false;
-}
 
 void CPU::decoder()
 {

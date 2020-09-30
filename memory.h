@@ -77,3 +77,14 @@ inline uint32_t Memory::read_32(Register &reg)
   uint32_t ret = read_32(reg.read_32());
   return ret;
 }
+
+inline void Memory::write_8(uint32_t addr, uint8_t val)
+{
+  memory[addr] = val;
+}
+
+inline void Memory::write_16(uint32_t addr, uint16_t val)
+{
+  memory[addr] = val & 0x00ff;
+  memory[addr+1] = (val & 0xff00) >> 8;
+}

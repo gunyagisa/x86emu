@@ -21,8 +21,6 @@ void ModRM::parse(CPU &cpu)
   set(cpu.get_code8());
   cpu.eip++;
 
-  printf("modrm: mod: %x reg: %x rm: %x\n", mod, reg, rm);
-
   if (mod != 3 && rm == 4) { // register
     sib = cpu.get_code8();
     cpu.eip++;
@@ -30,16 +28,13 @@ void ModRM::parse(CPU &cpu)
     if (cpu.mode == PROTECTED_MODE) {
       disp32 = cpu.get_code32();
       cpu.eip += 4;
-      printf("disp32:%04x\n", disp32);
     } else if (cpu.mode == REAL_MODE) {
       disp32 = cpu.get_code16();
       cpu.eip += 2;
-      printf("disp16:%04x\n", disp32);
     }
   } else if (mod == 1) { // disp 8
     disp8 = cpu.get_code8();
     cpu.eip++;
-    printf("disp8: %x\n", disp8);
   }
 
 }
@@ -148,7 +143,6 @@ void set_rm8(CPU &cpu, ModRM &modrm, uint8_t val)
     }
   } else {
     uint32_t addr = modrm.calc_address(cpu);
-    printf("write addr: 0x%x\n", addr);
     cpu.memory.write_8(addr, val);
   }
 }
@@ -169,7 +163,6 @@ void set_rm32(CPU &cpu, ModRM &modrm, uint32_t val)
     cpu.registers[modrm.rm].write_32(val);
   } else {
     uint32_t addr = modrm.calc_address(cpu);
-    printf("addr %08x\n", addr);
     cpu.memory.write_32(addr, val);
   }
 }
@@ -208,14 +201,11 @@ void set_status_flag(CPU &cpu, uint32_t op1, uint32_t op2)
   if (result > 0) {
     cpu.eflags &= 0x7fffffff;
     cpu.eflags &= ~(0x02000000);
-    printf("Carry Flag Off!\n");
   } else if (result < 0) {
     cpu.eflags |= 0x80000000;
     cpu.eflags &= ~(0x02000000);
-    printf("Carry Flag On!\n");
   } else if (result == 0) {
     cpu.eflags |= 0x02000000;
-    printf("Zero Flag!\n");
   }
   printf("eflags: 0x%x\n", cpu.eflags);
 }

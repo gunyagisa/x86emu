@@ -24,17 +24,6 @@ void Memory::write(uint32_t addr, uint8_t data[], uint32_t size)
   }
 }
 
-void Memory::write_8(uint32_t addr, uint8_t val)
-{
-  memory[addr] = val;
-}
-
-void Memory::write_16(uint32_t addr, uint16_t val)
-{
-  memory[addr] = val & 0x00ff;
-  memory[addr+1] = (val & 0xff00) >> 8;
-}
-
 void Memory::write_32(uint32_t addr, uint32_t val)
 {
   for (int i = 0; i < 4; ++i) {
