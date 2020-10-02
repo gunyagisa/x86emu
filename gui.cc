@@ -8,6 +8,7 @@
 
 #include <sys/wait.h>
 #include <thread>
+#include <chrono>
 
 class GUI {
     unsigned int width, height;
@@ -54,6 +55,8 @@ class GUI {
         if (x >= width) {
           x = 0;
           y++;
+          if (y >= height)
+            return;
         }
       }
     }
@@ -86,12 +89,12 @@ uint8_t palette[0xff * 3] = {
 
 void disp()
 {
-  printf("start display\n");
+  std::this_thread::sleep_for(std::chrono::milliseconds(100));
   gui.convert2(palette);
   glClear(GL_COLOR_BUFFER_BIT);
   //glRasterPos2i(-1 , -1);
   glDrawPixels(gui.get_width() , gui.get_height() , GL_RGB , GL_UNSIGNED_BYTE , gui.get_bitmap());
-  glFlush();
+  glutSwapBuffers();
 }
 
 void idle()
@@ -103,7 +106,7 @@ void start(GUI &gui, int *argc, char **argv)
 {
   glutInit(argc, argv);
   glutInitWindowSize(gui.get_width() * 2, gui.get_height() * 2);
-  glutInitDisplayMode(GLUT_RGBA);
+  glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
   glutCreateWindow("GUI TEST");
   glutDisplayFunc(disp);
   glutIdleFunc(idle);
