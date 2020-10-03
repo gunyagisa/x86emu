@@ -89,7 +89,6 @@ uint8_t palette[0xff * 3] = {
 
 void disp()
 {
-  std::this_thread::sleep_for(std::chrono::milliseconds(100));
   gui.convert2(palette);
   glClear(GL_COLOR_BUFFER_BIT);
   //glRasterPos2i(-1 , -1);

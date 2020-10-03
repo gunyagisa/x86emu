@@ -7,6 +7,8 @@
 #include <cstdlib>
 #include <ostream>
 
+extern ModRM modrm;
+
 CPU::CPU()
   : memory(), eip()
 { }
@@ -76,15 +78,34 @@ void CPU::decoder()
       registers[code - 0xb8].write_16(val);
     } else if (0x40 <= code && code <= 0x47) {
       inc(this, code - 0x40);
+    } else if (0x58 <= code && code <= 0x5f) {
+      pop_r(*this);
     } else {
-      ModRM modrm;
-
       switch (code) {
         case 0x00:
           add_rm8_r8(this);
           break;
+
+        case 0x0a:
+          or_r8_rm8(*this);
+          break;
+        case 0x0f:
+          code = get_code8();
+          eip++;
+
+          if (code == 0x01) {
+            // lgdt
+            lgdt(*this);
+          } else if (code == 0x20) {
+            // mov r32, cr
+            mov_r32_cr(*this);
+          }
+          break;
         case 0x3d:
           cmp_eax(this);
+          break;
+        case 0xc2:
+          ret_imm16(*this);
           break;
         case 0xeb:
           jmp_short(*this);
@@ -99,8 +120,7 @@ void CPU::decoder()
           jbe(*this);
           break;
         case 0x80:
-          modrm.set(get_code8());
-
+          modrm.parse(*this);
           if (modrm.ext == 0) {
             add_rm8_imm8(*this);
           } else if (modrm.ext == 7) {
@@ -134,7 +154,7 @@ void CPU::decoder()
           jg(this);
           break;
         case 0x83:
-          modrm.set(get_code8());
+          modrm.parse(*this);
           switch (modrm.ext) {
             case 0:
               add_rm16_imm8(*this);
@@ -177,11 +197,11 @@ void CPU::decoder()
               add_eax_imm32(registers[0], num);
             } else if ( code == 0x83 ) {
               std::cout << "add" << std::endl;
-              ModRM modrm{memory.read_8(eip)};
+              ModRM tmp{memory.read_8(eip)};
               eip++;
               uint8_t num = memory.read_8(eip);
               eip++;
-              add_rm32_imm8(registers[modrm.rm], num);
+              add_rm32_imm8(registers[tmp.rm], num);
             } else if ( code == 0x89 ) {
               mov_rm32_r32(*this);
             } else if (code == 0x81) {
@@ -191,7 +211,7 @@ void CPU::decoder()
                 << std::showbase << std::hex << (int)code
                 << ", eip: " << eip << std::noshowbase << std::endl;
               show_registers();
-              exit(0);
+              exit(1);
             }
           } else {
             show_registers();

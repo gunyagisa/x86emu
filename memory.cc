@@ -1,4 +1,5 @@
 #include "memory.h"
+#include "cpu.h"
 #include "register.h"
 #include <bits/stdint-uintn.h>
 
@@ -31,3 +32,22 @@ void Memory::write_32(uint32_t addr, uint32_t val)
   }
 }
 
+bool is_segment(CPU &cpu) {
+  return false;
+}
+
+bool is_paging(CPU  &cpu) {
+  return false;
+}
+
+uint32_t get_real_addr(uint32_t addr, CPU &cpu)
+{
+  if (cpu.mode == REAL_MODE) {
+    // segment register addressing 
+    return cpu.ds * 16 + addr;
+  } else {
+    if (is_segment(cpu)) {
+    } else if (is_paging(cpu)) {
+    }
+  }
+}

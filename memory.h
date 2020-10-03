@@ -42,10 +42,12 @@ class Memory {
     }
 };
 
+
 inline uint8_t Memory::read_8(uint32_t addr)
 {
   return memory[addr];
 }
+
 inline uint8_t Memory::read_8(Register &reg)
 {
   return read_8(reg.read_32());

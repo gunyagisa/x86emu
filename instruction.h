@@ -1,6 +1,9 @@
 #pragma once
 #include "register.h"
 #include "cpu.h"
+#include "modrm.h"
+
+extern ModRM modrm;
 
 namespace Instruction32 {
 
@@ -13,7 +16,12 @@ namespace Instruction32 {
 }
 
 namespace Instruction16 {
+  void mov_r32_cr(CPU &cpu);
+  void ret_imm16(CPU &cpu);
+  void pop_r(CPU &cpu);
+  void lgdt(CPU &cpu);
   void add_rm8_r8(CPU *cpu);
+  void or_r8_rm8(CPU &cpu);
   void mov_rm8_imm8(CPU *cpu);
   void cmp_eax(CPU *cpu);
   void inc(CPU *cpu, int reg);

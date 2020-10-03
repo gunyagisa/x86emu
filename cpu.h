@@ -9,9 +9,6 @@
 #define REAL_MODE 0
 #define PROTECTED_MODE 1
 
-class ModRM;
-
-
 class CPU {
   public:
     struct manager {
@@ -28,10 +25,7 @@ class CPU {
 
     enum registers {EAX, ECX, EDX, EBX, ESP, EBP, ESI, EDI, REGISTER_COUNT};
 
-    struct  GDTR {
-      uint16_t limit;
-      uint32_t base;
-    } gdtr;
+    Register gdtr;
 
     struct LDTR {
       uint16_t limit;
@@ -100,3 +94,5 @@ inline uint32_t CPU::get_code32()
   uint32_t code = memory.read_32(eip);
   return code;
 }
+
+uint32_t get_real_addr(uint32_t addr, CPU &cpu);

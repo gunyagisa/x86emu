@@ -1,7 +1,6 @@
 #include "instruction.h"
-#include "register.h"
-#include "modrm.h"
 #include "cpu.h"
+#include "modrm.h"
 #include <bits/stdint-uintn.h>
 #include <cstdio>
 #include <ostream>
@@ -17,10 +16,9 @@ namespace Instruction32 {
   // 0x89
   void mov_rm32_r32(CPU &cpu)
   {
-    ModRM modrm;
     modrm.parse(cpu);
-    uint32_t val = get_r32(cpu, modrm);
-    set_rm32(cpu, modrm, val);
+    uint32_t val = get_r32(cpu);
+    set_rm32(cpu, val);
   }
 
 
@@ -56,11 +54,31 @@ namespace Instruction16 {
   // 0x00 add
   void add_rm8_r8(CPU *cpu)
   {
-    ModRM modrm;
     modrm.parse(*cpu);
-    uint8_t op2 = get_r8(*cpu, modrm);
-    uint8_t op1 = get_rm8(*cpu, modrm);
-    set_rm8(*cpu, modrm, op1 + op2);
+    uint8_t op2 = get_r8(*cpu);
+    uint8_t op1 = get_rm8(*cpu);
+    set_rm8(*cpu, op1 + op2);
+  }
+
+  // 0a
+  void or_r8_rm8(CPU &cpu)
+  {
+    modrm.parse(cpu);
+    uint8_t op1, op2;
+    op1 = get_r8(cpu);
+    op2 = get_rm8(cpu);
+
+    set_r8(cpu, op1 | op2);
+  }
+
+  // 0x0f lgdt
+  void lgdt(CPU &cpu)
+  {
+    modrm.parse(cpu);
+    uint32_t gdt = get_rm16(cpu);
+    cpu.gdtr = gdt;
+    printf("load to gdtr: 0x%08x\n", (uint32_t)cpu.gdtr);
+    cpu.trans2protect();
   }
 
   // 0x3d
@@ -84,28 +102,45 @@ namespace Instruction16 {
     }
   }
 
+  // 0x5a
+  void pop_r(CPU &cpu)
+  {
+    uint32_t val = get_r(cpu);
+    if (cpu.mode == REAL_MODE) {
+      cpu.memory.write_16(cpu.registers[cpu.ESP], val);
+    }
+  }
+
   void mov_rm_r(CPU *cpu) 
   {
     if (cpu->mode == PROTECTED_MODE) {
       Instruction32::mov_rm32_r32(*cpu);
       return;
     }
-    ModRM modrm;
     modrm.parse(*cpu);
 
-    uint16_t op = get_r(*cpu, modrm);
-    set_rm(*cpu, modrm, op);
+    uint16_t op = get_r(*cpu);
+    set_rm(*cpu, op);
+  }
+
+  // 0xc2 ret imm8
+  void ret_imm16(CPU &cpu)
+  {
+    uint16_t near_addr = cpu.get_code16();
+    cpu.eip += 2;
+
+    cpu.registers[cpu.ESP] = get_real_addr(near_addr, cpu);
+    cpu.registers[cpu.ESP] += -2;
   }
 
   //0xc6 mov
   void mov_rm8_imm8(CPU *cpu)
   {
-    ModRM modrm;
     modrm.parse(*cpu);
 
     uint8_t op = cpu->get_code8();
     cpu->eip++;
-    set_rm8(*cpu, modrm, op);
+    set_rm8(*cpu, op);
   }
 
   // 0xeb JMP
@@ -120,6 +155,7 @@ namespace Instruction16 {
   // 0xb8 dword, mov ax dword
   void mov_r16_imm16(CPU &cpu)
   {
+    modrm.parse(cpu);
     uint16_t imm16 = cpu.get_code16();
     cpu.eip += 2;
     cpu.registers[0] = imm16;
@@ -127,12 +163,10 @@ namespace Instruction16 {
 
   void add_rm16_imm8(CPU &cpu)
   {
-    ModRM modrm;
-    modrm.parse(cpu);
     uint16_t op2 = cpu.get_code8();
     cpu.eip++;
-    uint16_t op1 = get_rm16(cpu, modrm);
-    set_rm16(cpu, modrm, op1 + op2);
+    uint16_t op1 = get_rm16(cpu);
+    set_rm16(cpu, op1 + op2);
   }
 
   // 0x72
@@ -161,20 +195,15 @@ namespace Instruction16 {
   // 0x80
   void add_rm8_imm8(CPU &cpu)
   {
-    ModRM modrm;
-    modrm.parse(cpu);
     uint8_t val = cpu.get_code8();
     cpu.eip++;
-    uint8_t val2 = get_rm8(cpu, modrm);
-    set_rm8(cpu, modrm, val + val2);
+    uint8_t val2 = get_rm8(cpu);
+    set_rm8(cpu, val + val2);
   }
 
   void cmp(CPU &cpu)
   {
-    ModRM modrm;
-    modrm.parse(cpu);
-
-    uint8_t op1 = get_rm8(cpu, modrm);
+    uint8_t op1 = get_rm8(cpu);
     uint8_t op2 = cpu.get_code8();
     cpu.eip++;
 
@@ -186,32 +215,28 @@ namespace Instruction16 {
   // 0x88
   void mov_rm8_r8(CPU &cpu)
   {
-    ModRM modrm;
     modrm.parse(cpu);
 
-    uint8_t val = get_r8(cpu, modrm);
-    set_rm8(cpu, modrm, val);
+    uint8_t val = get_r8(cpu);
+    set_rm8(cpu, val);
   }
 
 
   // 0x8c
   void mov_rm16_sreg(CPU &cpu)
   {
-    ModRM modrm;
     modrm.parse(cpu);
-    uint16_t val = get_sreg(cpu, modrm);
-    set_rm16(cpu, modrm, val);
+    uint16_t val = get_sreg(cpu);
+    set_rm16(cpu, val);
   }
 
 
   // 0x8e
   void mov_sreg_rm16(CPU &cpu)
   {
-    ModRM modrm;
     modrm.parse(cpu);
-    uint16_t val = get_rm16(cpu, modrm);
-    set_sreg(cpu, modrm, val);
-
+    uint16_t val = get_rm16(cpu);
+    set_sreg(cpu, val);
     cpu.show_segment_registers();
   }
 
@@ -240,19 +265,16 @@ namespace Instruction16 {
     printf("JMP rel16: %x\n", rel16);
     cpu->eip += 2;
     cpu->eip += rel16;
-    if (cpu->eip == 0xc200)
-      cpu->trans2protect();
   }
 
   // 0x81
   void cmp_rm_imm(CPU *cpu)
   {
-    ModRM modrm;
     modrm.parse(*cpu);
 
     uint32_t op = cpu->get_code32();
     cpu->eip += 4;
-    uint32_t op2 = get_rm32(*cpu, modrm);
+    uint32_t op2 = get_rm32(*cpu);
 
     set_status_flag(*cpu, op2, op);
   }
@@ -261,9 +283,8 @@ namespace Instruction16 {
   // 0xf7
   void div_r32(CPU *cpu)
   {
-    ModRM modrm;
     modrm.parse(*cpu);
-    uint32_t op = get_rm32(*cpu, modrm);
+    uint32_t op = get_rm32(*cpu);
     uint32_t a = cpu->registers[0].read_32();
     uint32_t r = a % op;
     uint16_t p = a / op;

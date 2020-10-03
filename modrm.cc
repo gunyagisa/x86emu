@@ -1,6 +1,7 @@
 #include "modrm.h"
-#include "cpu.h"
 #include <bits/stdint-uintn.h>
+
+ModRM modrm;
 
 ModRM::ModRM()
 {}
@@ -42,7 +43,7 @@ void ModRM::parse(CPU &cpu)
 uint32_t ModRM::calc_address(CPU &cpu)
 {
   if (cpu.mode == REAL_MODE) {
-    uint16_t addr = calc_address16(cpu, *this);
+    uint16_t addr = calc_address16(cpu);
     return addr;
   }
   if (mod == 0) {
@@ -76,8 +77,9 @@ uint32_t ModRM::calc_address(CPU &cpu)
   }
 }
 
-uint16_t calc_address16(CPU &cpu, ModRM &modrm)
+uint16_t calc_address16(CPU &cpu)
 {
+  uint16_t addr;
   if (modrm.mod == 0) {
     if (modrm.rm == 0) {
       uint16_t ret = cpu.registers[3].read_16() + cpu.registers[6].read_16();
@@ -86,32 +88,34 @@ uint16_t calc_address16(CPU &cpu, ModRM &modrm)
       printf("not implemented.\n");
       exit(0);
     } else if (modrm.rm == 5) {
-      return (uint16_t) modrm.disp32;
+      addr = modrm.disp32;
     } else if (modrm.rm == 7) {
-      return cpu.registers[3].read_16();
+      addr  = cpu.registers[3].read_16();
     } else {
-      return cpu.registers[modrm.rm].read_16();;
+      addr = cpu.registers[modrm.rm].read_16();;
     }
   } else if (modrm.mod == 1) {
     if (modrm.rm == 4) {
       printf("modrm mod 1 , rm 4\n");
       exit(1);
     } else {
-      return cpu.registers[modrm.rm].read_16() + modrm.disp8;
+      addr = cpu.registers[modrm.rm].read_16() + modrm.disp8;
     }
   } else if (modrm.mod == 2) {
     if (modrm.rm == 0) {
-      return cpu.registers[3].read_16() + cpu.registers[6].read_16() + modrm.disp8;
+      addr = cpu.registers[3].read_16() + cpu.registers[6].read_16() + modrm.disp8;
     } else if (modrm.rm == 4) {
       printf("modrm mod 3 , rm 4\n");
       exit(1);
     } else {
-      return cpu.registers[modrm.rm].read_16() + (uint16_t) modrm.disp32;
+      addr = cpu.registers[modrm.rm].read_16() + (uint16_t) modrm.disp32;
     }
   } else {
     printf("wrong modrm\n");
     exit(1);
   }
+
+  return get_real_addr(addr, cpu);
 }
 
 void ModRM::show()
@@ -119,21 +123,21 @@ void ModRM::show()
   printf("modrm mod %x, reg %x, rm %x\n", mod, reg, rm);
 }
 
-void set_rm(CPU &cpu, ModRM &modrm, uint32_t val)
+void set_rm(CPU &cpu, uint32_t val)
 {
   switch (cpu.mode) {
     case REAL_MODE:
-      set_rm16(cpu, modrm, val);
+      set_rm16(cpu, val);
       break;
     case PROTECTED_MODE:
-      set_rm32(cpu, modrm, val);
+      set_rm32(cpu, val);
       break;
     default:
       break;
   }
 }
 
-void set_rm8(CPU &cpu, ModRM &modrm, uint8_t val)
+void set_rm8(CPU &cpu, uint8_t val)
 {
   if (modrm.mod == 3) {
     if (modrm.rm <= 3) {
@@ -147,17 +151,17 @@ void set_rm8(CPU &cpu, ModRM &modrm, uint8_t val)
   }
 }
 
-void set_rm16(CPU &cpu, ModRM &modrm, uint16_t val)
+void set_rm16(CPU &cpu, uint16_t val)
 {
   if (modrm.mod == 3) {
     cpu.registers[modrm.rm].write_16(val);
   } else {
-    uint16_t addr = calc_address16(cpu, modrm);
+    uint16_t addr = calc_address16(cpu);
     cpu.memory.write_16(addr, val);
   }
 }
 
-void set_rm32(CPU &cpu, ModRM &modrm, uint32_t val)
+void set_rm32(CPU &cpu, uint32_t val)
 {
   if ( modrm.mod == 3 ) {
     cpu.registers[modrm.rm].write_32(val);
@@ -167,7 +171,7 @@ void set_rm32(CPU &cpu, ModRM &modrm, uint32_t val)
   }
 }
 
-void set_sreg(CPU &cpu, ModRM &modrm, uint16_t val)
+void set_sreg(CPU &cpu, uint16_t val)
 {
   switch (modrm.reg) {
     case 0:
@@ -210,7 +214,7 @@ void set_status_flag(CPU &cpu, uint32_t op1, uint32_t op2)
   printf("eflags: 0x%x\n", cpu.eflags);
 }
 
-uint32_t get_rm32(CPU &cpu, ModRM &modrm)
+uint32_t get_rm32(CPU &cpu)
 {
   if (modrm.mod == 3) {
     return cpu.registers[modrm.rm].read_32();
@@ -220,7 +224,7 @@ uint32_t get_rm32(CPU &cpu, ModRM &modrm)
   }
 }
 
-uint8_t get_rm8(CPU &cpu, ModRM &modrm)
+uint8_t get_rm8(CPU &cpu)
 {
   if (modrm.mod == 3) {
     if (modrm.rm <= 3) {
@@ -234,7 +238,7 @@ uint8_t get_rm8(CPU &cpu, ModRM &modrm)
   }
 }
 
-uint16_t get_rm16(CPU &cpu, ModRM &modrm)
+uint16_t get_rm16(CPU &cpu)
 {
   if (modrm.mod == 3) {
       return cpu.registers[modrm.rm].read_16();
@@ -244,31 +248,40 @@ uint16_t get_rm16(CPU &cpu, ModRM &modrm)
   }
 }
 
-uint32_t get_r(CPU &cpu, ModRM &modrm)
+void set_r8(CPU &cpu, uint8_t val)
+{
+  if (modrm.reg <= 3) {
+    cpu.registers[modrm.reg].write_8l(val);
+  } else {
+    cpu.registers[modrm.reg - 4].write_8h(val);
+  }
+}
+
+uint32_t get_r(CPU &cpu)
 {
   switch (cpu.mode) {
     case REAL_MODE:
-      return get_r16(cpu, modrm);
+      return get_r16(cpu);
       break;
     case PROTECTED_MODE:
-      return get_r32(cpu, modrm);
+      return get_r32(cpu);
       break;
     default:
       break;
   }
 }
 
-uint32_t get_r32(CPU &cpu, ModRM &modrm)
+uint32_t get_r32(CPU &cpu)
 {
   return cpu.registers[modrm.reg].read_32();
 }
 
-uint16_t get_r16(CPU &cpu, ModRM &modrm)
+uint16_t get_r16(CPU &cpu)
 {
   return cpu.registers[modrm.reg].read_16();
 }
 
-uint8_t get_r8(CPU &cpu, ModRM &modrm)
+uint8_t get_r8(CPU &cpu)
 {
   if (modrm.reg < 4) {
     return cpu.registers[modrm.reg].read_8l();
@@ -277,7 +290,7 @@ uint8_t get_r8(CPU &cpu, ModRM &modrm)
   }
 }
 
-uint16_t get_sreg(CPU &cpu, ModRM &modrm)
+uint16_t get_sreg(CPU &cpu)
 {
   switch (modrm.reg) {
     case 0:
