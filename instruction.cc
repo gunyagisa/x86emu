@@ -71,6 +71,13 @@ namespace Instruction16 {
     set_r8(cpu, op1 | op2);
   }
 
+  void mov_r32_cr(CPU &cpu)
+  {
+    modrm.parse(cpu);
+    int op = get_cr(cpu);
+    set_rm32(cpu, op);
+  }
+
   // 0x0f lgdt
   void lgdt(CPU &cpu)
   {

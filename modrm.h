@@ -21,11 +21,7 @@ struct ModRM {
 
   ModRM();
   ModRM(uint8_t modrm);
-
-  void set(uint8_t code);
-
-  void parse(CPU &cpu);
-  uint32_t calc_address(CPU &cpu);
+void set(uint8_t code); void parse(CPU &cpu); uint32_t calc_address(CPU &cpu);
 
   void show();
 };
@@ -51,3 +47,5 @@ uint32_t get_r32(CPU &cpu);
 uint16_t get_r16(CPU &cpu);
 uint8_t get_r8(CPU &cpu);
 uint16_t get_sreg(CPU &cpu);
+
+uint32_t get_cr(CPU &cpu);
