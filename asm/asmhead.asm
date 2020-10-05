@@ -12,7 +12,7 @@ VRAM equ   0xa0000
 
 ; set segment
 next:
-  mov   ax, 1 * 8
+  mov   ax, 8
   mov   ds, ax
   mov   es, ax
   mov   fs, ax

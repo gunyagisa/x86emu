@@ -33,7 +33,7 @@ void Memory::write_32(uint32_t addr, uint32_t val)
 }
 
 bool is_segment(CPU &cpu) {
-  return false;
+  return cpu.manager.segment;
 }
 
 bool is_paging(CPU  &cpu) {

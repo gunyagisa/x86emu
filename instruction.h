@@ -16,7 +16,9 @@ namespace Instruction32 {
 }
 
 namespace Instruction16 {
+  void and_rm16_imm8(CPU &cpu);
   void mov_r32_cr(CPU &cpu);
+  void mov_cr_r32(CPU &cpu);
   void ret_imm16(CPU &cpu);
   void pop_r(CPU &cpu);
   void lgdt(CPU &cpu);

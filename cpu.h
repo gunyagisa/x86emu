@@ -2,6 +2,7 @@
 #include "memory.h"
 #include "register.h"
 
+#include <bits/stdint-uintn.h>
 #include <vector>
 
 #define DEFAULT_START_UP_ADDRESS 0x7c00
@@ -13,6 +14,7 @@ class CPU {
   public:
     struct manager {
       std::string disk_name;
+      bool segment = false;
     } manager;
 
 

@@ -49,3 +49,4 @@ uint8_t get_r8(CPU &cpu);
 uint16_t get_sreg(CPU &cpu);
 
 uint32_t get_cr(CPU &cpu);
+void set_cr(CPU &cpu, uint32_t val);

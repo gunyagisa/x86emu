@@ -71,12 +71,6 @@ namespace Instruction16 {
     set_r8(cpu, op1 | op2);
   }
 
-  void mov_r32_cr(CPU &cpu)
-  {
-    modrm.parse(cpu);
-    int op = get_cr(cpu);
-    set_rm32(cpu, op);
-  }
 
   // 0x0f lgdt
   void lgdt(CPU &cpu)
@@ -86,6 +80,20 @@ namespace Instruction16 {
     cpu.gdtr = gdt;
     printf("load to gdtr: 0x%08x\n", (uint32_t)cpu.gdtr);
     cpu.trans2protect();
+  }
+
+  void mov_r32_cr(CPU &cpu)
+  {
+    modrm.parse(cpu);
+    int op = get_cr(cpu);
+    set_rm32(cpu, op);
+  }
+
+  void mov_cr_r32(CPU &cpu)
+  {
+    modrm.parse(cpu);
+    uint32_t op = get_r32(cpu);
+    set_cr(cpu, op);
   }
 
   // 0x3d
@@ -168,12 +176,21 @@ namespace Instruction16 {
     cpu.registers[0] = imm16;
   }
 
+  // 0x83 ext
   void add_rm16_imm8(CPU &cpu)
   {
     uint16_t op2 = cpu.get_code8();
     cpu.eip++;
     uint16_t op1 = get_rm16(cpu);
     set_rm16(cpu, op1 + op2);
+  }
+
+  void and_rm16_imm8(CPU &cpu)
+  {
+    uint16_t op1 = get_rm16(cpu);
+    uint16_t op2 = cpu.get_code8();
+    cpu.eip++;
+    set_rm16(cpu, op1 & op2);
   }
 
   // 0x72

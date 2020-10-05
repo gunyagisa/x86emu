@@ -55,7 +55,6 @@ void CPU::show_segment_registers()
   printf("gs = 0x%x\n", gs);
 }
 
-
 void CPU::decoder()
 {
   for (;;) {
@@ -99,6 +98,8 @@ void CPU::decoder()
           } else if (code == 0x20) {
             // mov r32, cr
             mov_r32_cr(*this);
+          } else if (code == 0x22) {
+            mov_cr_r32(*this);
           }
           break;
         case 0x3d:
@@ -159,6 +160,9 @@ void CPU::decoder()
             case 0:
               add_rm16_imm8(*this);
               break;
+            case 4:
+              and_rm16_imm8(*this);
+              break;
             case 7:
               break;
             default:
@@ -183,6 +187,9 @@ void CPU::decoder()
         case 0xf7:
           div_r32(this);
           break;
+        case 0x66:
+          code = get_code8();
+          eip++;
         default:
           if (mode == PROTECTED_MODE) {
             using namespace Instruction32;

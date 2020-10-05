@@ -1,9 +1,7 @@
 #include "modrm.h"
 #include <bits/stdint-uintn.h>
 #include <cstdio>
-
-ModRM modrm;
-
+ModRM modrm; 
 ModRM::ModRM()
 {}
 
@@ -326,4 +324,13 @@ uint32_t get_cr(CPU &cpu)
     exit(1);
   }
   return cpu.cr[modrm.reg];
+}
+
+void set_cr(CPU &cpu, uint32_t val)
+{
+  if (modrm.reg == 1 || modrm.reg >= 5) {
+    fprintf(stderr, "invalid control register\n");
+    exit(1);
+  }
+  cpu.cr[modrm.reg] = val;
 }
