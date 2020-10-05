@@ -41,7 +41,6 @@ void CPU::show_registers()
 void CPU::trans2protect()
 {
   mode = PROTECTED_MODE;
-
   printf("trans2protect\n");
 }
 
@@ -159,6 +158,9 @@ void CPU::decoder()
           switch (modrm.ext) {
             case 0:
               add_rm16_imm8(*this);
+              break;
+            case 1:
+              or_rm16_imm8(*this);
               break;
             case 4:
               and_rm16_imm8(*this);

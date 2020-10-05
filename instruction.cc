@@ -79,7 +79,7 @@ namespace Instruction16 {
     uint32_t gdt = get_rm16(cpu);
     cpu.gdtr = gdt;
     printf("load to gdtr: 0x%08x\n", (uint32_t)cpu.gdtr);
-    cpu.trans2protect();
+    cpu.manager.segment = true;
   }
 
   void mov_r32_cr(CPU &cpu)
@@ -183,6 +183,15 @@ namespace Instruction16 {
     cpu.eip++;
     uint16_t op1 = get_rm16(cpu);
     set_rm16(cpu, op1 + op2);
+  }
+
+  void or_rm16_imm8(CPU &cpu)
+  {
+    uint16_t op1 = get_rm16(cpu);
+    uint8_t op2 = cpu.get_code8();
+    cpu.eip++;
+
+    set_rm16(cpu, op1 | op2);
   }
 
   void and_rm16_imm8(CPU &cpu)
@@ -296,11 +305,13 @@ namespace Instruction16 {
   {
     modrm.parse(*cpu);
 
-    uint32_t op = cpu->get_code32();
+    uint32_t op2 = cpu->get_code32();
     cpu->eip += 4;
-    uint32_t op2 = get_rm32(*cpu);
+    uint32_t op1 = get_rm32(*cpu);
 
-    set_status_flag(*cpu, op2, op);
+    printf("compare 0x%08x and 0x%08x\n", op1, op2);
+
+    set_status_flag(*cpu, op1, op2);
   }
 
 
@@ -317,7 +328,7 @@ namespace Instruction16 {
   }
 
   void hlt(CPU *cpu) {
-    printf("HLT\n");
+    fprintf(stderr, "HLT\n");
     return;
   }
 }

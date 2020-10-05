@@ -10,6 +10,20 @@
 #define REAL_MODE 0
 #define PROTECTED_MODE 1
 
+struct GDT {
+  uint16_t limit_low, base_low;
+  uint8_t base_mid;
+  uint8_t type : 4;
+  uint8_t flag : 1;
+  uint8_t dpl : 2;
+  uint8_t present_flag : 1;
+  uint8_t limit_hi : 4;
+  uint8_t avl : 1;
+  uint8_t db : 1;
+  uint8_t granularity : 1;
+  uint8_t base_hi;
+};
+
 class CPU {
   public:
     struct manager {

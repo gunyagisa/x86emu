@@ -25,6 +25,7 @@ namespace Instruction16 {
   void add_rm8_r8(CPU *cpu);
   void or_r8_rm8(CPU &cpu);
   void mov_rm8_imm8(CPU *cpu);
+  void or_rm16_imm8(CPU &cpu);
   void cmp_eax(CPU *cpu);
   void inc(CPU *cpu, int reg);
   void jmp_short(CPU &cpu);

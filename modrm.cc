@@ -1,4 +1,5 @@
 #include "modrm.h"
+#include "cpu.h"
 #include <bits/stdint-uintn.h>
 #include <cstdio>
 ModRM modrm; 
@@ -333,4 +334,12 @@ void set_cr(CPU &cpu, uint32_t val)
     exit(1);
   }
   cpu.cr[modrm.reg] = val;
+  printf("set cr%d: %d\n", modrm.reg, val);
+  if (modrm.reg == 0) {
+    if ((cpu.cr[0] & 0x00000001) == 1) {
+      cpu.trans2protect();
+    } else {
+      cpu.mode = REAL_MODE;
+    }
+  }
 }

@@ -6,7 +6,7 @@ VRAM equ   0xa0000
 ; protected mode
   lgdt  [GDTR0]
   mov   eax, cr0
-  and   eax, 0x00000001
+  or   eax, 0x00000001
   mov   cr0, eax
   jmp   next
 
@@ -26,8 +26,8 @@ boot_main:
 loop:
   mov   eax, ebx
   div   ecx
-  mov   al, dl
-  mov   byte [ebx], al
+  mov   eax, edx
+  mov   [ebx], eax
   add   ebx, 1
   cmp   ebx, 0xaffff
   jbe   loop
