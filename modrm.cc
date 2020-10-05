@@ -25,7 +25,7 @@ void ModRM::parse(CPU &cpu)
   if (mod != 3 && rm == 4) { // register
     sib = cpu.get_code8();
     cpu.eip++;
-  } else if ((mod == 0 && rm == 6) || mod == 2) { // disp 32
+  } else if (mod == 2) { // disp 32
     if (cpu.mode == PROTECTED_MODE) {
       disp32 = cpu.get_code32();
       cpu.eip += 4;
@@ -36,6 +36,14 @@ void ModRM::parse(CPU &cpu)
   } else if (mod == 1) { // disp 8
     disp8 = cpu.get_code8();
     cpu.eip++;
+  } else if (mod == 0) {
+    if (cpu.mode == REAL_MODE && rm == 6) {
+      disp32 = cpu.get_code16();
+      cpu.eip += 2;
+    } else if (cpu.mode == PROTECTED_MODE && rm == 5) {
+      disp32 = cpu.get_code32();
+      cpu.eip += 4;
+    }
   }
 
 }
@@ -53,7 +61,7 @@ uint32_t ModRM::calc_address(CPU &cpu)
     } else if (rm == 5) {
       return disp32;
     } else {
-      return cpu.registers[rm].read_32();;
+      return cpu.registers[rm];
     }
   } else if (mod == 1) {
     if (rm == 4) {
@@ -167,6 +175,7 @@ void set_rm32(CPU &cpu, uint32_t val)
     cpu.registers[modrm.rm].write_32(val);
   } else {
     uint32_t addr = modrm.calc_address(cpu);
+    printf("write addr: %x\n", addr);
     cpu.memory.write_32(addr, val);
   }
 }
@@ -217,7 +226,9 @@ void set_status_flag(CPU &cpu, uint32_t op1, uint32_t op2)
 uint32_t get_rm32(CPU &cpu)
 {
   if (modrm.mod == 3) {
-    return cpu.registers[modrm.rm].read_32();
+    uint32_t ret = cpu.registers[modrm.rm].read_32();
+    std::cout << "return: " << ret << std::endl;
+    return ret;
   } else {
     uint32_t addr = modrm.calc_address(cpu);
     return cpu.memory.read_32(addr);
@@ -255,6 +266,11 @@ void set_r8(CPU &cpu, uint8_t val)
   } else {
     cpu.registers[modrm.reg - 4].write_8h(val);
   }
+}
+
+void set_r32(CPU &cpu, uint32_t val)
+{
+  cpu.registers[modrm.reg] = val;
 }
 
 uint32_t get_r(CPU &cpu)

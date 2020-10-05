@@ -61,35 +61,67 @@ void CPU::decoder()
     uint8_t code = get_code8();
     printf("code=%02x, eip=0x%08x\n", code, (uint32_t)eip);
     eip++;
+
+no_eip:
+
     if (mode == PROTECTED_MODE) {
       using namespace Instruction32;
       if (0xb8 <= code && code <= 0xbf) {
-        std::cout << "mov" << std::endl;
-        uint32_t num = memory.read_32(eip);
+        uint32_t num = get_code32();
         eip += 4;
-        mov_r32_imm32(registers[code - 0xb8], num);
+        registers[code - 0xb8] = num;
+        std::cout << "mov :" << num << std::endl;
         continue;
       } else if ( code == 0x05 ) {
         uint32_t num = get_code32();
         eip += 4;
         add_eax_imm32(registers[0], num);
-      } else if ( code == 0x83 ) {
-        std::cout << "add" << std::endl;
-        ModRM tmp{memory.read_8(eip)};
-        eip++;
-        uint8_t num = memory.read_8(eip);
-        eip++;
-        add_rm32_imm8(registers[tmp.rm], num);
         continue;
+      } else if (code == 0x74) {
+        if (is_zf()) {
+          jmp_short(*this);
+        } else {
+          eip++;
+        }
+        continue;
+      } else if (code == 0x75) {
+        std::cout << "ZF==" << is_zf() << std::endl;
+        if (!(is_zf())) {
+          jmp_short(*this);
+        } else {
+          eip++;
+        }
+        continue;
+      } else if ( code == 0x83 ) {
+        modrm.parse(*this);
+        if (modrm.ext == 0) {
+          uint32_t op1 = get_rm32(*this);
+          uint8_t op2 = get_code8();
+          eip++;
+
+          printf("ADD op1 %d, op2 %d\n", op1, op2);
+          set_rm32(*this, op1 + op2);
+          continue;
+        } else if (modrm.ext == 5) {
+          sub_rm32_imm8(*this);
+          continue;
+        }
       } else if ( code == 0x89 ) {
         mov_rm32_r32(*this);
         continue;
       } else if (code == 0x81) {
         cmp_rm_imm(this);
         continue;
-      } 
+      } else if (code == 0x8b) {
+        mov_r32_rm32(*this);
+        continue;
+      } else if (code == 0xea) {
+        printf("jumpf\n");
+        fflush(stdout);
+        jumpf(*this);
+        continue;
+      }
     }
-
     if (0xb0 <= code && code <= 0xb7) {
       uint8_t val = get_code8();
       eip++;
@@ -222,6 +254,9 @@ void CPU::decoder()
         case 0x66:
           break;
         default:
+          fprintf(stderr, "[e] can not implement code: 0x%02x\n", code);
+          fprintf(stderr, "eip: 0x%08x\n", (uint32_t) eip);
+          exit(1);
           break;
       } 
     } 

@@ -2,6 +2,7 @@
 #include "cpu.h"
 #include "modrm.h"
 #include <bits/stdint-uintn.h>
+#include <cstdint>
 #include <cstdio>
 #include <ostream>
 
@@ -18,7 +19,17 @@ namespace Instruction32 {
   {
     modrm.parse(cpu);
     uint32_t val = get_r32(cpu);
+    printf("val :%d\n", val);
     set_rm32(cpu, val);
+  }
+
+  // 0x8b
+  void mov_r32_rm32(CPU &cpu)
+  {
+    modrm.parse(cpu);
+    uint32_t op = get_rm32(cpu);
+    printf("val: %x\n", op);
+    set_r32(cpu, op);
   }
 
 
@@ -34,20 +45,48 @@ namespace Instruction32 {
     dst_reg += num;
   }
 
+  void sub_rm32_imm8(CPU &cpu)
+  {
+    uint32_t op1 = get_rm32(cpu);
+    uint8_t op2 = cpu.get_code8();
+    cpu.eip++;
+
+    set_rm32(cpu, op1 - op2);
+    set_status_flag(cpu, op1, op2);
+  }
+
   // 0xe8
   void call(CPU *cpu)
   {
-    uint32_t dst = cpu->get_code32();
+    uint32_t rel = cpu->get_code32();
     cpu->eip += 4;
-
-    cpu->eip = 0xc222;
+    cpu->registers[cpu->ESP] += -4;
+    cpu->memory.write_32(cpu->registers[cpu->ESP], cpu->eip);
+    cpu->eip += rel;
   }
 
   void ret(CPU *cpu)
   {
-    cpu->eip = 0xc214;
+    uint32_t addr = cpu->memory.read_32(cpu->registers[cpu->ESP]);
+    cpu->registers[cpu->ESP] += 4;
+    cpu->eip = addr;
   }
 
+  void jumpf(CPU &cpu)
+  {
+    uint32_t addr = cpu.get_code32();
+    cpu.eip += 4;
+    uint16_t ptr = cpu.get_code16();
+    cpu.eip += 2;
+
+    fflush(stdout);
+
+    struct GDT * gdt = (struct GDT *) (cpu.memory.read_32(cpu.gdtr + 2) + (uintptr_t)((uint8_t *)cpu.memory));
+    gdt += ptr / 8;
+    uint32_t base = gdt->base_hi << 24 | gdt->base_mid << 16 | gdt->base_low;
+    printf("base: %x\n", base);
+    cpu.eip = base + addr;
+  }
 }
 
 namespace Instruction16 {
@@ -125,6 +164,15 @@ namespace Instruction16 {
     if (cpu.mode == REAL_MODE) {
       cpu.memory.write_16(cpu.registers[cpu.ESP], val);
     }
+  }
+
+  // 0x8b
+  void mov_r32_rm32(CPU &cpu)
+  {
+    modrm.parse(cpu);
+    uint32_t op1 = get_r32(cpu);
+    uint32_t op2 = get_rm32(cpu);
+    set_r32(cpu, op1 + op2);
   }
 
   void mov_rm_r(CPU *cpu) 
@@ -322,9 +370,11 @@ namespace Instruction16 {
   {
     modrm.parse(*cpu);
     uint32_t op = get_rm32(*cpu);
-    uint32_t a = cpu->registers[0].read_32();
+    uint32_t a = cpu->registers[2] * 16 + cpu->registers[0];
+    printf("DIV: %d / %d\n", op, a);
+    fflush(stdout);
     uint32_t r = a % op;
-    uint16_t p = a / op;
+    uint32_t p = a / op;
     cpu->registers[0].write_32(p);
     cpu->registers[2].write_32(r);
   }

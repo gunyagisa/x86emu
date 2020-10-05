@@ -13,6 +13,8 @@ next:
 bits 32
 
 VRAM equ   0xa0000
+BOOTPAK equ 0x00280000
+
 
 ; set segment
 next:
@@ -30,14 +32,51 @@ loop:
   mov   eax, ebx
   div   ecx
   mov   eax, edx
-  mov   [ebx], eax
+  mov   [ebx], al
   add   ebx, 1
   cmp   ebx, 0xaffff
   jbe   loop
 
+
+  mov   esi, bootpack
+  mov   edi, BOOTPAK
+  mov   ecx, 512 * 1024 / 4
+  call  memcpy
+
+
+
+  mov   ebx, BOOTPAK
+  mov   ecx, [ebx+16]
+  add   ecx, 3
+  mov   eax, ecx
+  mov   ecx, 4
+  div   ecx
+  mov   ecx, eax
+  jz    skip
+  mov   esi, [ebx+20]
+  add   edi, ebx
+  mov   edi, [ebx+12]
+  call  memcpy
+
+  jmp   fin
+
+skip:
+  mov   esp, [ebx+12]
+  jmp   2*8:0x0000001b
+
+
 fin:
   hlt
   jmp   fin
+
+memcpy:
+  mov   eax, [esi]
+  add   esi, 4
+  mov   [edi], eax
+  add   edi, 4
+  sub   ecx, 1
+  jnz   memcpy
+  ret
 
 GDT0:
 	TIMES 8 DB 0
@@ -46,8 +85,9 @@ GDT0:
 
 	DW		0
 GDTR0:
-	DW		8*3-1
+	DW		8*3
 	DD		GDT0
 
 	TIMES 16 DB 0
 
+bootpack:

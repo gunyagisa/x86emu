@@ -41,6 +41,7 @@ uint16_t get_rm16(CPU &cpu);
 uint32_t get_rm32(CPU &cpu);
 
 void set_r8(CPU &cpu, uint8_t val);
+void set_r32(CPU &cpu, uint32_t val);
 
 uint32_t get_r(CPU &cpu);
 uint32_t get_r32(CPU &cpu);
