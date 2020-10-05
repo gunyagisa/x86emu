@@ -69,15 +69,16 @@ namespace Instruction16 {
     op2 = get_rm8(cpu);
 
     set_r8(cpu, op1 | op2);
+    set_status_flag(cpu, op1, op2);
+    cpu.eflags &= 0x7fffffff;
   }
 
 
   // 0x0f lgdt
   void lgdt(CPU &cpu)
   {
-    modrm.parse(cpu);
-    uint32_t gdt = get_rm16(cpu);
-    cpu.gdtr = gdt;
+    uint32_t gdt = modrm.disp32;
+    cpu.gdtr = cpu.cs * 16 + gdt;
     printf("load to gdtr: 0x%08x\n", (uint32_t)cpu.gdtr);
     cpu.manager.segment = true;
   }
@@ -163,8 +164,8 @@ namespace Instruction16 {
   {
     int8_t rel8 = cpu.get_code8();
     cpu.eip++;
-    printf("rel8 %x\n", rel8);
-    cpu.eip += cpu.cs * 16 + rel8;
+    cpu.eip += rel8;
+    printf("jmp to 0x%08x\n", (uint32_t)cpu.eip);
   }
 
   // 0xb8 dword, mov ax dword
@@ -216,6 +217,7 @@ namespace Instruction16 {
   void jbe(CPU &cpu)
   {
     std::cout << "jbe CF==" << cpu.is_cf() << std::endl;
+    std::cout << "jbe ZF==" << cpu.is_zf() << std::endl;
     // CF = 1 or ZF = 1
     if (cpu.is_cf() || cpu.is_zf()) {
       jmp_short(cpu);
@@ -305,9 +307,9 @@ namespace Instruction16 {
   {
     modrm.parse(*cpu);
 
+    uint32_t op1 = get_rm32(*cpu);
     uint32_t op2 = cpu->get_code32();
     cpu->eip += 4;
-    uint32_t op1 = get_rm32(*cpu);
 
     printf("compare 0x%08x and 0x%08x\n", op1, op2);
 

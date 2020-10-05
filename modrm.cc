@@ -211,7 +211,7 @@ void set_status_flag(CPU &cpu, uint32_t op1, uint32_t op2)
   } else if (result == 0) {
     cpu.eflags |= 0x02000000;
   }
-  printf("eflags: 0x%x\n", cpu.eflags);
+  printf("eflags: 0x%08x\n", cpu.eflags);
 }
 
 uint32_t get_rm32(CPU &cpu)

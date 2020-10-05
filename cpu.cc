@@ -61,6 +61,34 @@ void CPU::decoder()
     uint8_t code = get_code8();
     printf("code=%02x, eip=0x%08x\n", code, (uint32_t)eip);
     eip++;
+    if (mode == PROTECTED_MODE) {
+      using namespace Instruction32;
+      if (0xb8 <= code && code <= 0xbf) {
+        std::cout << "mov" << std::endl;
+        uint32_t num = memory.read_32(eip);
+        eip += 4;
+        mov_r32_imm32(registers[code - 0xb8], num);
+        continue;
+      } else if ( code == 0x05 ) {
+        uint32_t num = get_code32();
+        eip += 4;
+        add_eax_imm32(registers[0], num);
+      } else if ( code == 0x83 ) {
+        std::cout << "add" << std::endl;
+        ModRM tmp{memory.read_8(eip)};
+        eip++;
+        uint8_t num = memory.read_8(eip);
+        eip++;
+        add_rm32_imm8(registers[tmp.rm], num);
+        continue;
+      } else if ( code == 0x89 ) {
+        mov_rm32_r32(*this);
+        continue;
+      } else if (code == 0x81) {
+        cmp_rm_imm(this);
+        continue;
+      } 
+    }
 
     if (0xb0 <= code && code <= 0xb7) {
       uint8_t val = get_code8();
@@ -83,15 +111,17 @@ void CPU::decoder()
         case 0x00:
           add_rm8_r8(this);
           break;
-
         case 0x0a:
           or_r8_rm8(*this);
           break;
         case 0x0f:
           code = get_code8();
-          eip++;
+          eip += 1;
 
           if (code == 0x01) {
+            std::cout << "eip" << eip << std::endl;
+            modrm.parse(*this);
+            std::cout << "eip" << eip << std::endl;
             // lgdt
             lgdt(*this);
           } else if (code == 0x20) {
@@ -190,47 +220,9 @@ void CPU::decoder()
           div_r32(this);
           break;
         case 0x66:
-          code = get_code8();
-          eip++;
+          break;
         default:
-          if (mode == PROTECTED_MODE) {
-            using namespace Instruction32;
-            if (0xb8 <= code && code <= 0xbf) {
-              std::cout << "mov" << std::endl;
-              uint32_t num = memory.read_32(eip);
-              eip += 4;
-              mov_r32_imm32(registers[code - 0xb8], num);
-            } else if ( code == 0x05 ) {
-              uint32_t num = get_code32();
-              eip += 4;
-              add_eax_imm32(registers[0], num);
-            } else if ( code == 0x83 ) {
-              std::cout << "add" << std::endl;
-              ModRM tmp{memory.read_8(eip)};
-              eip++;
-              uint8_t num = memory.read_8(eip);
-              eip++;
-              add_rm32_imm8(registers[tmp.rm], num);
-            } else if ( code == 0x89 ) {
-              mov_rm32_r32(*this);
-            } else if (code == 0x81) {
-              cmp_rm_imm(this);
-            } else {
-              std::cout << "[E] can not implement: opecode "
-                << std::showbase << std::hex << (int)code
-                << ", eip: " << eip << std::noshowbase << std::endl;
-              show_registers();
-              exit(1);
-            }
-          } else {
-            show_registers();
-            std::cout << "[E] can not implement: opecode "
-              << std::showbase << std::hex << (int)code
-              << ", eip: " << eip << std::noshowbase << std::endl;
-            show_registers();
-            exit(1);
-            break;
-          }
+          break;
       } 
     } 
   }

@@ -1,19 +1,22 @@
 org 0xc200 
-bits 32
 
-VRAM equ   0xa0000
 
 ; protected mode
   lgdt  [GDTR0]
   mov   eax, cr0
-  or   eax, 0x00000001
+  or    ax, 0x0001
   mov   cr0, eax
   jmp   next
+
+next:
+
+bits 32
+
+VRAM equ   0xa0000
 
 ; set segment
 next:
   mov   ax, 8
-  mov   ds, ax
   mov   es, ax
   mov   fs, ax
   mov   gs, ax
@@ -35,7 +38,6 @@ loop:
 fin:
   hlt
   jmp   fin
-
 
 GDT0:
 	TIMES 8 DB 0
