@@ -46,9 +46,8 @@ namespace Instruction32 {
 
     if (!(cpu.is_zf()) && (cpu.is_cf() == ((cpu.eflags & 0x00100000) >> 20))) {
       cpu.eip += rel32;
-    } else {
-      cpu.eip++;
-    }
+      printf("jmp rel32: %x\n", rel32);
+    }  
   }
 
   // 0x55 push_ebp 

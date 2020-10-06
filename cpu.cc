@@ -77,6 +77,16 @@ no_eip:
         eip += 4;
         add_eax_imm32(registers[0], num);
         continue;
+      } else if (code == 0x0f) {
+        uint8_t tmp = get_code8();
+        if (tmp == 0x8f) {
+          eip++;
+          jg_rel32(*this);
+          continue;
+        }
+      } else if (code == 0x55) {
+        push_ebp(*this);
+        continue;
       } else if (code == 0x74) {
         if (is_zf()) {
           jmp_short(*this);
@@ -115,10 +125,16 @@ no_eip:
       } else if (code == 0x8b) {
         mov_r32_rm32(*this);
         continue;
+      } else if (code == 0xc7) {
+        mov_rm32_imm32(*this);
+        continue;
       } else if (code == 0xea) {
         printf("jumpf\n");
         fflush(stdout);
         jumpf(*this);
+        continue;
+      } else if (code == 0xe9) {
+        jmp_rel32(*this);
         continue;
       }
     }
