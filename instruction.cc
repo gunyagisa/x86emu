@@ -39,6 +39,28 @@ namespace Instruction32 {
     reg += num;
   }
 
+  void jg_rel32(CPU &cpu)
+  {
+    uint32_t rel32 = cpu.get_code32();
+    cpu.eip +=  4;
+
+    if (!(cpu.is_zf()) && (cpu.is_cf() == ((cpu.eflags & 0x00100000) >> 20))) {
+      cpu.eip += rel32;
+    } else {
+      cpu.eip++;
+    }
+  }
+
+  // 0x55 push_ebp 
+  void push_ebp(CPU &cpu)
+  {
+    struct GDT * gdt = (struct GDT *) (cpu.memory.read_32(cpu.gdtr + 2) + (uintptr_t)((uint8_t *)cpu.memory));
+    gdt += cpu.ss / 8;
+    uint32_t base = gdt->base_hi << 24 | gdt->base_mid << 16 | gdt->base_low;
+
+    cpu.memory.write_32(cpu.registers[cpu.ESP] + base, cpu.registers[cpu.EBP]);
+  }
+
   // 0x83 add
   void add_rm32_imm8(Register &dst_reg, uint8_t num)
   {
@@ -65,6 +87,7 @@ namespace Instruction32 {
     cpu->eip += rel;
   }
 
+  // 0xc3
   void ret(CPU *cpu)
   {
     uint32_t addr = cpu->memory.read_32(cpu->registers[cpu->ESP]);
@@ -72,6 +95,16 @@ namespace Instruction32 {
     cpu->eip = addr;
   }
 
+  // 0xc7
+  void mov_rm32_imm32(CPU &cpu)
+  {
+    modrm.parse(cpu);
+    uint32_t op = cpu.get_code32();
+    cpu.eip += 4;
+    set_rm32(cpu, op);
+  }
+
+  // 0xea
   void jumpf(CPU &cpu)
   {
     uint32_t addr = cpu.get_code32();
@@ -87,6 +120,15 @@ namespace Instruction32 {
     printf("base: %x\n", base);
     cpu.eip = base + addr;
   }
+
+  // 0xe9
+  void jmp_rel32(CPU &cpu)
+  {
+    uint32_t rel32 = cpu.get_code32();
+    cpu.eip += 4;
+    cpu.eip += rel32;
+  }
+
 }
 
 namespace Instruction16 {
