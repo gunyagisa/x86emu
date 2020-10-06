@@ -16,6 +16,10 @@ namespace Instruction32 {
   void ret(CPU *cpu);
   void sub_rm32_imm8(CPU &cpu);
   void jumpf(CPU &cpu);
+  void push_ebp(CPU &cpu);
+  void mov_rm32_imm32(CPU &cpu);
+  void jg_rel32(CPU &cpu);
+  void jmp_rel32(CPU &cpu);
 }
 
 namespace Instruction16 {
