@@ -84,8 +84,11 @@ no_eip:
           jg_rel32(*this);
           continue;
         }
-      } else if (code == 0x55) {
-        push_ebp(*this);
+      } else if (code == 0x31) {
+        xor_rm32_r32(*this);
+        continue;
+      } else if (0x50 <= code && code <= 0x57) {
+        push_r(code - 0x50, *this);
         continue;
       } else if (code == 0x74) {
         if (is_zf()) {

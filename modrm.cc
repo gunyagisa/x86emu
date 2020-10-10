@@ -56,8 +56,7 @@ uint32_t ModRM::calc_address(CPU &cpu)
   }
   if (mod == 0) {
     if (rm == 4) {
-      printf("not implemented.\n");
-      exit(0);
+
     } else if (rm == 5) {
       return disp32;
     } else {

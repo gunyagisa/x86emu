@@ -69,8 +69,5 @@ int main(int argc, char *argv[])
   std::thread th2(Thread2, std::ref(cpu));
   th2.join();
 
-  while (1) {
-  }
-
   printf("finish\n");
 }

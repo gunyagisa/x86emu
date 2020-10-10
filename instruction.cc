@@ -50,6 +50,15 @@ namespace Instruction32 {
     }  
   }
 
+  // 0x31 xor_rm32_r32
+  void xor_rm32_r32(CPU &cpu)
+  {
+    modrm.parse(cpu);
+    uint32_t op1 = get_rm32(cpu);
+    uint32_t op2 = get_r32(cpu);
+    set_rm32(cpu, op1 ^ op2);
+  }
+
   // 0x55 push_ebp 
   void push_ebp(CPU &cpu)
   {
@@ -58,6 +67,15 @@ namespace Instruction32 {
     uint32_t base = gdt->base_hi << 24 | gdt->base_mid << 16 | gdt->base_low;
 
     cpu.memory.write_32(cpu.registers[cpu.ESP] + base, cpu.registers[cpu.EBP]);
+  }
+
+  void push_r(uint8_t r, CPU &cpu)
+  {
+    struct GDT * gdt = (struct GDT *) (cpu.memory.read_32(cpu.gdtr + 2) + (uintptr_t)((uint8_t *)cpu.memory));
+    gdt += cpu.ss / 8;
+    uint32_t base = gdt->base_hi << 24 | gdt->base_mid << 16 | gdt->base_low;
+
+    cpu.memory.write_32(cpu.registers[cpu.ESP] + base, cpu.registers[r]);
   }
 
   // 0x83 add

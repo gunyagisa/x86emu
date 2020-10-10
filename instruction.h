@@ -2,6 +2,7 @@
 #include "register.h"
 #include "cpu.h"
 #include "modrm.h"
+#include <bits/stdint-uintn.h>
 
 extern ModRM modrm;
 
@@ -15,8 +16,10 @@ namespace Instruction32 {
   void call(CPU *cpu);
   void ret(CPU *cpu);
   void sub_rm32_imm8(CPU &cpu);
+  void xor_rm32_r32(CPU &cpu);
   void jumpf(CPU &cpu);
   void push_ebp(CPU &cpu);
+  void push_r(uint8_t r, CPU &cpu);
   void mov_rm32_imm32(CPU &cpu);
   void jg_rel32(CPU &cpu);
   void jmp_rel32(CPU &cpu);
