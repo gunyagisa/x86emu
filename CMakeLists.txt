@@ -6,6 +6,7 @@ add_definitions(-std=c++17)
 project(x86emu CXX)
 
 # compile config
+set(CMAKE_CXX_COMPILER clang++)
 add_executable(
   x86emu
   memory.cc
