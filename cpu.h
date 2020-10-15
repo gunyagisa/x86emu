@@ -110,5 +110,3 @@ inline uint32_t CPU::get_code32()
   uint32_t code = memory.read_32(eip);
   return code;
 }
-
-uint32_t get_real_addr(uint32_t addr, CPU &cpu);

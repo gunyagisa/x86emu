@@ -9,31 +9,7 @@
 #include <thread>
 
 #include "gui.cc"
-
-void set_protected_mode(CPU &cpu)
-{
-  cpu.mode = PROTECTED_MODE;
-}
-
-void set_manager(CPU &cpu, char *file)
-{
-  cpu.manager.disk_name = file;
-}
-
-void load_ipl(unsigned char *buf, char *file)
-{
-  FILE *fp;
-
-  fp = fopen(file, "rb");
-
-  if (fp == NULL) {
-    perror(__FUNCTION__);
-    exit(1);
-  }
-
-  fread(buf, sizeof(uint8_t), 512, fp);
-  fclose(fp);
-}
+#include "util.h"
 
 void Thread1(CPU &cpu, int *argc, char **argv)
 {

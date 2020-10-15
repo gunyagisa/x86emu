@@ -2,6 +2,8 @@
 #include "cpu.h"
 #include <bits/stdint-uintn.h>
 #include <cstdio>
+#include "util.h"
+
 ModRM modrm; 
 ModRM::ModRM()
 {}

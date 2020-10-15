@@ -6,6 +6,8 @@
 #include <cstdio>
 #include <ostream>
 
+#include "util.h"
+
 namespace Instruction32 {
 
   // 0x

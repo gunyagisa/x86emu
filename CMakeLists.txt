@@ -15,6 +15,7 @@ add_executable(
   instruction.cc
   modrm.cc
   main.cc
+  util.cc
   bios.cc
   )
 
