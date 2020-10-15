@@ -1,5 +1,3 @@
-OUTPUT_FORMAT("binary");
-
 SECTIONS
 {
 	.head 0x0 : {

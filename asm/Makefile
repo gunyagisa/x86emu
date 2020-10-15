@@ -1,7 +1,7 @@
 .PHONY: clean
 
 CC = clang
-LD = lld
+LD = ld.lld
 
 asmhead.bin: asmhead.asm
 	nasm $< -o $@

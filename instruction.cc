@@ -19,7 +19,6 @@ namespace Instruction32 {
   {
     modrm.parse(cpu);
     uint32_t val = get_r32(cpu);
-    printf("val :%d\n", val);
     set_rm32(cpu, val);
   }
 
@@ -28,7 +27,6 @@ namespace Instruction32 {
   {
     modrm.parse(cpu);
     uint32_t op = get_rm32(cpu);
-    printf("val: %x\n", op);
     set_r32(cpu, op);
   }
 
@@ -46,7 +44,6 @@ namespace Instruction32 {
 
     if (!(cpu.is_zf()) && (cpu.is_cf() == ((cpu.eflags & 0x00100000) >> 20))) {
       cpu.eip += rel32;
-      printf("jmp rel32: %x\n", rel32);
     }  
   }
 
@@ -134,7 +131,6 @@ namespace Instruction32 {
     struct GDT * gdt = (struct GDT *) (cpu.memory.read_32(cpu.gdtr + 2) + (uintptr_t)((uint8_t *)cpu.memory));
     gdt += ptr / 8;
     uint32_t base = gdt->base_hi << 24 | gdt->base_mid << 16 | gdt->base_low;
-    printf("base: %x\n", base);
     cpu.eip = base + addr;
   }
 
@@ -430,7 +426,6 @@ namespace Instruction16 {
     modrm.parse(*cpu);
     uint32_t op = get_rm32(*cpu);
     uint32_t a = cpu->registers[2] * 16 + cpu->registers[0];
-    printf("DIV: %d / %d\n", op, a);
     fflush(stdout);
     uint32_t r = a % op;
     uint32_t p = a / op;

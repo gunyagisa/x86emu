@@ -26,11 +26,13 @@ void load_ipl(unsigned char *buf, char *file)
 
   fp = fopen(file, "rb");
 
+  if (fp == NULL) {
+    perror(__FUNCTION__);
+    exit(1);
+  }
 
   fread(buf, sizeof(uint8_t), 512, fp);
-
   fclose(fp);
-
 }
 
 void Thread1(CPU &cpu, int *argc, char **argv)
