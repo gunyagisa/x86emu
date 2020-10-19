@@ -53,6 +53,8 @@ namespace Instruction16 {
   void jg(CPU *cpu);
   void jmp_rel16(CPU *cpu);
   void div_r32(CPU *cpu);
+  void out_dx_al(CPU &cpu);
+  void in_al_dx(CPU &cpu);
   void hlt(CPU *cpu);
   void cmp_rm_imm(CPU *cpu);
 }

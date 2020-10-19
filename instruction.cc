@@ -8,6 +8,8 @@
 
 #include "util.h"
 
+#include "serial.h"
+
 namespace Instruction32 {
 
   // 0x
@@ -419,6 +421,66 @@ namespace Instruction16 {
     printf("compare 0x%08x and 0x%08x\n", op1, op2);
 
     set_status_flag(*cpu, op1, op2);
+  }
+
+  // 0xee
+#define SERIAL_PORT 0x3F8
+struct SERIAL serial;
+
+  void out_dx_al(CPU &cpu)
+  {
+    uint16_t port = cpu.registers[cpu.EDX].read_16();
+    uint8_t data = cpu.registers[cpu.EAX].read_8l();
+
+    switch (port) {
+      case SERIAL_PORT + 0: // date register. write and read this buffer.
+        serial.fifo.push(data);
+        break;
+      case SERIAL_PORT + 1: // interrupt enable register.
+        serial.interrupt = data;
+        break;
+      case SERIAL_PORT + 2:
+        if (data == 0xc7) {
+          serial.fifo.enable();
+        }
+        break;
+      case SERIAL_PORT + 3:
+        break;
+      case SERIAL_PORT + 4:
+        break;
+      case SERIAL_PORT + 5: // line status
+        serial.status = data;
+        break;
+      case SERIAL_PORT + 6:
+        break;
+      case SERIAL_PORT + 7:
+        break;
+
+      default:
+        fprintf(stderr, "not defined port.\n");
+        exit(1);
+        break;
+    }
+  }
+
+  // 0xef
+  void in_al_dx(CPU &cpu)
+  {
+    uint16_t port = cpu.registers[cpu.EDX].read_16();
+    uint16_t data;
+
+    switch (port) {
+      case SERIAL_PORT + 0:
+          data = serial.fifo.pop();
+        break;
+      case SERIAL_PORT + 5:
+          data = serial.status;
+      default:
+        fprintf(stderr, "not defined port.\n");
+        exit(1);
+        break;
+    }
+    cpu.registers[cpu.EAX].write_8l(data);
   }
 
 
