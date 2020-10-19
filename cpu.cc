@@ -264,6 +264,12 @@ no_eip:
         case 0xe9:
           jmp_rel16(this);
           break;
+        case 0xee:
+          out_dx_al(*this);
+          break;
+        case 0xef:
+          in_al_dx(*this);
+          break;
         case 0xf4:
           hlt(this);
           break;

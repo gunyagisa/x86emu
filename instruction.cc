@@ -435,6 +435,7 @@ struct SERIAL serial;
     switch (port) {
       case SERIAL_PORT + 0: // date register. write and read this buffer.
         serial.fifo.push(data);
+        printf("[SERIAL] %c\n", data);
         break;
       case SERIAL_PORT + 1: // interrupt enable register.
         serial.interrupt = data;

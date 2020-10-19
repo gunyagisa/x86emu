@@ -15,7 +15,11 @@
 #define COL8_008484		14
 #define COL8_848484		15
 
+#include <stdint.h>
+
 extern void io_hlt(void);
+extern uint8_t io_in8(uint16_t port);
+extern void io_out8(uint16_t port, uint8_t data);
 
 void boxfill(unsigned int color_code, int x0, int y0, int x1, int y1)
 {
@@ -49,8 +53,38 @@ void init_screen()
   boxfill(COL8_FFFFFF, xsize - 3, ysize - 24, xsize - 3, ysize - 3);
 }	
 
+#define PORT 0x3F8
+void init_serial()
+{
+  io_out8(PORT + 1, 0x00);
+  io_out8(PORT + 2, 0xc7);
+}
+
+int serial_recv()
+{
+  return io_in8(PORT + 5) & 1;
+}
+
+uint8_t serial_read()
+{
+  while (serial_recv() == 0);
+  return io_in8(PORT);
+}
+
+int is_transmit_empty()
+{
+  return io_in8(PORT + 5) & 0x20;
+}
+
+void serial_write(uint8_t data)
+{
+  while(is_transmit_empty() == 0);
+
+  io_out8(PORT, data);
+}
+
 int main()
 {
-  init_screen();
-  io_hlt();
+  init_serial();
+  serial_write('A');
 }
