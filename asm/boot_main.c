@@ -1,4 +1,5 @@
-#include "boot_main.h"
+extern void init_serial();
+extern void serial_write(char a);
 
 int main()
 {
