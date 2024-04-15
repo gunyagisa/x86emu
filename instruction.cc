@@ -90,6 +90,7 @@ namespace Instruction32 {
     uint32_t op1 = get_rm32(cpu);
     uint8_t op2 = cpu.get_code8();
     cpu.eip++;
+    printf("SUB op1 %d, op2 %d\n", op1, op2);
 
     set_rm32(cpu, op1 - op2);
     set_status_flag(cpu, op1, op2);
@@ -500,6 +501,7 @@ struct SERIAL serial;
 
   void hlt(CPU *cpu) {
     fprintf(stderr, "HLT\n");
+    for (;;) { }
     return;
   }
 }

@@ -97,7 +97,7 @@ no_eip:
           eip++;
         }
         continue;
-      } else if (code == 0x75) {
+      } else if (code == 0x75) { // jnz
         std::cout << "ZF==" << is_zf() << std::endl;
         if (!(is_zf())) {
           jmp_short(*this);
@@ -105,7 +105,7 @@ no_eip:
           eip++;
         }
         continue;
-      } else if ( code == 0x83 ) {
+      } else if (code == 0x83) { // add
         modrm.parse(*this);
         if (modrm.ext == 0) {
           uint32_t op1 = get_rm32(*this);
@@ -114,6 +114,8 @@ no_eip:
 
           printf("ADD op1 %d, op2 %d\n", op1, op2);
           set_rm32(*this, op1 + op2);
+          if (op1 + op2 == 0)
+              eflags |= 0x80000000;
           continue;
         } else if (modrm.ext == 5) {
           sub_rm32_imm8(*this);

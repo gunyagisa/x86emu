@@ -34,7 +34,6 @@ class GUI {
 
     void convert2(const unsigned char *palette)
     {
-      printf("start convert\n");
       unsigned char rgb[3];
       int x = 0;
       int y = 0;

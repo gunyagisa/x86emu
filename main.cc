@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
   unsigned char buf[512];
   load_ipl(buf, argv[1]);
 
-  CPU cpu{buf, 512, 0x7c00};
+  CPU cpu{buf, 1024, 0x7c00};
   set_manager(cpu, argv[1]);
 
   // gpu thread
